@@ -1,0 +1,58 @@
+import type { GalleryImage } from '../types';
+
+export const galleryImages: GalleryImage[] = [
+    {
+        id: 'kirodi-lal-event-1',
+        url: '/images/gallery/kirodi-lal-event.jpeg',
+        thumbnail: '/images/gallery/kirodi-lal-event.jpeg',
+        title: 'Event',
+        titleHi: 'कार्यक्रम',
+        category: 'political-events',
+        date: '2025-01-01',
+    },
+    {
+        id: 'kirodi-lal-event-2',
+        url: '/images/gallery/kirodi-lal-event-2.jpeg',
+        thumbnail: '/images/gallery/kirodi-lal-event-2.jpeg',
+        title: 'Event',
+        titleHi: 'कार्यक्रम',
+        category: 'political-events',
+        date: '2025-01-02',
+    },
+    {
+        id: 'kirodi-lal-event-3',
+        url: '/images/gallery/kirodi-lal-event-3.jpeg',
+        thumbnail: '/images/gallery/kirodi-lal-event-3.jpeg',
+        title: 'Event',
+        titleHi: 'कार्यक्रम',
+        category: 'political-events',
+        date: '2025-01-03',
+    },
+    {
+        id: 'kirodi-lal-rally',
+        url: '/images/gallery/Kirodi-Lal-Meena-during-a-political-rally.jpg',
+        thumbnail: '/images/gallery/Kirodi-Lal-Meena-during-a-political-rally.jpg',
+        title: 'Political Rally',
+        titleHi: 'राजनीतिक रैली',
+        category: 'political-events',
+        date: '2025-01-04',
+    },
+    {
+        id: 'kirodi-lal-family',
+        url: '/images/gallery/Kirodi-Lal-Meena-with-his-son.jpg',
+        thumbnail: '/images/gallery/Kirodi-Lal-Meena-with-his-son.jpg',
+        title: 'Family',
+        titleHi: 'परिवार',
+        category: 'other',
+        date: '2025-01-05',
+    },
+    {
+        id: 'kirodi-lal-portrait-webp',
+        url: '/images/gallery/Meena.webp',
+        thumbnail: '/images/gallery/Meena.webp',
+        title: 'Portrait',
+        titleHi: 'चित्र',
+        category: 'other',
+        date: '2025-01-06',
+    },
+];

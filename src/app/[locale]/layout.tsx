@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import "../globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { SplashScreen } from '@/components/SplashScreen';
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <html lang={locale} dir={locale === 'hi' ? 'ltr' : 'ltr'}>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <NextIntlClientProvider messages={messages}>
+                    <SplashScreen />
                     {children}
                     <Toaster />
                 </NextIntlClientProvider>

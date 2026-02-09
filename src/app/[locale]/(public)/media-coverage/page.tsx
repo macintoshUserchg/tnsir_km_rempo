@@ -7,7 +7,7 @@ type Props = {
     params: Promise<{ locale: string }>;
 };
 
-export default async function BlogPage({ params }: Props) {
+export default async function MediaCoveragePage({ params }: Props) {
     const { locale } = await params;
     setRequestLocale(locale);
 
@@ -15,13 +15,13 @@ export default async function BlogPage({ params }: Props) {
         <div className="section-padding">
             <Container>
                 <SectionHeading
-                    title="Blog"
-                    subtitle="Thoughts, updates, and insights"
+                    title="Media Coverage"
+                    subtitle="News and media appearances"
                     centered
                 />
                 <div className="max-w-4xl mx-auto text-center py-12">
                     <p className="text-gray-600 text-lg">
-                        Blog posts will be displayed here. Content coming soon.
+                        Media coverage will be displayed here. Content coming soon.
                     </p>
                 </div>
             </Container>

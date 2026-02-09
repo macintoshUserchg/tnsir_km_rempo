@@ -65,7 +65,7 @@ export default function ApplicationForm({ vidhansabhas, workTypes }: Application
             if (result.success) {
                 reset();
             }
-        } catch (error) {
+        } catch {
             setSubmitResult({ success: false, error: 'आवेदन जमा करने में त्रुटि हुई' });
         } finally {
             setIsSubmitting(false);

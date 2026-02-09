@@ -17,7 +17,18 @@
         "search": "Search",
         "loading": "Loading...",
         "noResults": "No results found",
-        "readMore": "Read More"
+        "readMore": "Read More",
+        "speeches": "Speeches",
+        "events": "Events",
+        "gallery": "Gallery",
+        "photoGallery": "Photo Gallery",
+        "videoGallery": "Video Gallery",
+        "mediaCoverage": "Media Coverage",
+        "newsletter": "Newsletter",
+        "quickLinks": "Quick Links",
+        "subscribe": "Subscribe",
+        "source": "Source",
+        "watchOnYouTube": "Watch on YouTube"
     },
     "home": {
         "heroTitle": "In Service of the People",
@@ -29,10 +40,23 @@
     },
     "biography": {
         "title": "Biography",
+        "subtitle": "The journey of a dedicated public servant",
         "earlyLife": "Early Life",
         "politicalCareer": "Political Career",
         "achievements": "Achievements",
-        "timeline": "Timeline"
+        "keyAchievements": "Key Achievements",
+        "timeline": "Timeline",
+        "born": "Born",
+        "place": "Place",
+        "education": "Education"
+    },
+    "photoGalleryPage": {
+        "title": "Photo Gallery",
+        "subtitle": "Glimpses of public service and events"
+    },
+    "videoGalleryPage": {
+        "title": "Video Gallery",
+        "subtitle": "Watch speeches and interviews"
     },
     "application": {
         "title": "Application Form",

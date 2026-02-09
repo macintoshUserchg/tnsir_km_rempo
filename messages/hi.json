@@ -17,7 +17,18 @@
         "search": "खोजें",
         "loading": "लोड हो रहा है...",
         "noResults": "कोई परिणाम नहीं मिला",
-        "readMore": "और पढ़ें"
+        "readMore": "और पढ़ें",
+        "speeches": "भाषण",
+        "events": "कार्यक्रम",
+        "gallery": "गैलरी",
+        "photoGallery": "फोटो गैलरी",
+        "videoGallery": "वीडियो गैलरी",
+        "mediaCoverage": "मीडिया कवरेज",
+        "newsletter": "समाचार पत्र",
+        "quickLinks": "त्वरित लिंक",
+        "subscribe": "सदस्यता लें",
+        "source": "स्रोत",
+        "watchOnYouTube": "यूट्यूब पर देखें"
     },
     "home": {
         "heroTitle": "जनप्रतिनिधि की सेवा में",
@@ -29,10 +40,23 @@
     },
     "biography": {
         "title": "जीवनी",
+        "subtitle": "एक समर्पित जनसेवक की यात्रा",
         "earlyLife": "प्रारंभिक जीवन",
         "politicalCareer": "राजनीतिक करियर",
         "achievements": "उपलब्धियाँ",
-        "timeline": "समयरेखा"
+        "keyAchievements": "प्रमुख उपलब्धियां",
+        "timeline": "समयरेखा",
+        "born": "जन्म",
+        "place": "स्थान",
+        "education": "शिक्षा"
+    },
+    "photoGalleryPage": {
+        "title": "फोटो गैलरी",
+        "subtitle": "सार्वजनिक सेवा और कार्यक्रमों की झलकियां"
+    },
+    "videoGalleryPage": {
+        "title": "वीडियो गैलरी",
+        "subtitle": "भाषण और साक्षात्कार देखें"
     },
     "application": {
         "title": "आवेदन पत्र",
