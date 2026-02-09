@@ -8,6 +8,7 @@ import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { submitApplicationByAdmin } from '@/app/actions/application';
 import { ApplicationFormFields } from './ApplicationFormFields';
 import { DocumentUploadSection, UploadedFile } from './DocumentUploadSection';
+import { toast } from 'sonner';
 
 interface AdminApplicationFormProps {
     locale: string;
@@ -112,14 +113,18 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
 
             if (result.success) {
                 setSuccess(true);
+                toast.success(isHindi ? 'आवेदन सफलतापूर्वक जमा हुआ!' : 'Application Submitted Successfully!');
                 setTimeout(() => {
                     router.push(`/${locale}/admin/applications`);
                 }, 2000);
             } else {
-                setError(result.error || 'Submission failed');
+                const errorMessage = result.error || 'Submission failed';
+                setError(errorMessage);
+                toast.error(errorMessage);
             }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Submission failed');
+            toast.error(err instanceof Error ? err.message : 'Submission failed');
         } finally {
             setSubmitting(false);
         }

@@ -4,6 +4,7 @@ import prisma from '@/lib/db';
 import { applicationSchema, ApplicationFormData, adminApplicationSchema, AdminApplicationData } from '@/lib/validations/application';
 import { revalidatePath } from 'next/cache';
 import { auth } from '@/lib/auth';
+import { ZodError } from 'zod';
 
 // Generate unique CNumber: YYYYMMDD-RANDOM
 function generateCNumber(): string {
@@ -93,6 +94,11 @@ export async function submitApplication(
         return { success: true, cNumber };
     } catch (error) {
         console.error('Error submitting application:', error);
+        if (error instanceof ZodError) {
+            const zodError = error as any;
+            const errorMessage = zodError.errors?.[0]?.message || zodError.issues?.[0]?.message || 'मान्य डेटा नहीं है / Invalid data';
+            return { success: false, error: errorMessage };
+        }
         return { success: false, error: error instanceof Error ? error.message : 'आवेदन जमा करने में त्रुटि हुई' };
     }
 }
@@ -144,6 +150,11 @@ export async function submitApplicationByAdmin(
         return { success: true, cNumber };
     } catch (error) {
         console.error('Error submitting application (admin):', error);
+        if (error instanceof ZodError) {
+            const zodError = error as any;
+            const errorMessage = zodError.errors?.[0]?.message || zodError.issues?.[0]?.message || 'मान्य डेटा नहीं है / Invalid data';
+            return { success: false, error: errorMessage };
+        }
         return { success: false, error: 'आवेदन जमा करने में त्रुटि हुई' };
     }
 }

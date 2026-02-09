@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User, Briefcase, FileText } from 'lucide-react';
+import { ReactTransliterate } from 'react-transliterate';
+import 'react-transliterate/dist/index.css';
 
 interface ApplicationFormFieldsProps {
     locale: string;
@@ -46,25 +48,47 @@ export const ApplicationFormFields: React.FC<ApplicationFormFieldsProps> = ({
                             <Label className="text-sm font-medium text-gray-700">
                                 {isHindi ? 'नाम' : 'Name'} <span className="text-red-500">*</span>
                             </Label>
-                            <Input
-                                value={formData.name}
-                                onChange={(e) => onChange('name', e.target.value)}
-                                required
-                                placeholder={isHindi ? 'पूरा नाम दर्ज करें' : 'Enter full name'}
-                                className="h-11"
-                            />
+                            {isHindi ? (
+                                <ReactTransliterate
+                                    renderComponent={(props) => <Input {...props} className="h-11" />}
+                                    value={formData.name}
+                                    onChangeText={(text) => onChange('name', text)}
+                                    lang="hi"
+                                    placeholder="पूरा नाम दर्ज करें"
+                                    containerClassName="w-full"
+                                />
+                            ) : (
+                                <Input
+                                    value={formData.name}
+                                    onChange={(e) => onChange('name', e.target.value)}
+                                    required
+                                    placeholder="Enter full name"
+                                    className="h-11"
+                                />
+                            )}
                         </div>
                         <div className="space-y-2">
                             <Label className="text-sm font-medium text-gray-700">
                                 {isHindi ? 'पिता का नाम' : "Father's Name"} <span className="text-red-500">*</span>
                             </Label>
-                            <Input
-                                value={formData.fatherName}
-                                onChange={(e) => onChange('fatherName', e.target.value)}
-                                required
-                                placeholder={isHindi ? 'पिता का नाम दर्ज करें' : "Enter father's name"}
-                                className="h-11"
-                            />
+                            {isHindi ? (
+                                <ReactTransliterate
+                                    renderComponent={(props) => <Input {...props} className="h-11" />}
+                                    value={formData.fatherName}
+                                    onChangeText={(text) => onChange('fatherName', text)}
+                                    lang="hi"
+                                    placeholder="पिता का नाम दर्ज करें"
+                                    containerClassName="w-full"
+                                />
+                            ) : (
+                                <Input
+                                    value={formData.fatherName}
+                                    onChange={(e) => onChange('fatherName', e.target.value)}
+                                    required
+                                    placeholder="Enter father's name"
+                                    className="h-11"
+                                />
+                            )}
                         </div>
                     </div>
 
@@ -106,14 +130,25 @@ export const ApplicationFormFields: React.FC<ApplicationFormFieldsProps> = ({
                         <Label className="text-sm font-medium text-gray-700">
                             {isHindi ? 'पता' : 'Address'} <span className="text-red-500">*</span>
                         </Label>
-                        <Textarea
-                            value={formData.address}
-                            onChange={(e) => onChange('address', e.target.value)}
-                            required
-                            rows={3}
-                            placeholder={isHindi ? 'पूरा पता दर्ज करें' : 'Enter complete address'}
-                            className="resize-none"
-                        />
+                        {isHindi ? (
+                            <ReactTransliterate
+                                renderComponent={(props) => <Textarea {...props} className="resize-none" rows={3} />}
+                                value={formData.address}
+                                onChangeText={(text) => onChange('address', text)}
+                                lang="hi"
+                                placeholder="पूरा पता दर्ज करें"
+                                containerClassName="w-full"
+                            />
+                        ) : (
+                            <Textarea
+                                value={formData.address}
+                                onChange={(e) => onChange('address', e.target.value)}
+                                required
+                                rows={3}
+                                placeholder="Enter complete address"
+                                className="resize-none"
+                            />
+                        )}
                     </div>
                 </CardContent>
             </Card>
@@ -176,13 +211,24 @@ export const ApplicationFormFields: React.FC<ApplicationFormFieldsProps> = ({
                             <Label className="text-sm font-medium text-gray-700">
                                 {isHindi ? 'पद / पदनाम' : 'Post / Designation'} <span className="text-red-500">*</span>
                             </Label>
-                            <Input
-                                value={formData.post}
-                                onChange={(e) => onChange('post', e.target.value)}
-                                required
-                                placeholder={isHindi ? 'जैसे: सरपंच, पार्षद, विधायक' : 'e.g., Sarpanch, Councilor, MLA'}
-                                className="h-11"
-                            />
+                            {isHindi ? (
+                                <ReactTransliterate
+                                    renderComponent={(props) => <Input {...props} className="h-11" />}
+                                    value={formData.post}
+                                    onChangeText={(text) => onChange('post', text)}
+                                    lang="hi"
+                                    placeholder="जैसे: सरपंच, पार्षद, विधायक"
+                                    containerClassName="w-full"
+                                />
+                            ) : (
+                                <Input
+                                    value={formData.post}
+                                    onChange={(e) => onChange('post', e.target.value)}
+                                    required
+                                    placeholder="e.g., Sarpanch, Councilor, MLA"
+                                    className="h-11"
+                                />
+                            )}
                         </div>
                     )}
                 </CardContent>
@@ -224,13 +270,24 @@ export const ApplicationFormFields: React.FC<ApplicationFormFieldsProps> = ({
                         <Label className="text-sm font-medium text-gray-700">
                             {isHindi ? 'विस्तृत विवरण' : 'Detailed Description'}
                         </Label>
-                        <Textarea
-                            value={formData.description}
-                            onChange={(e) => onChange('description', e.target.value)}
-                            rows={5}
-                            placeholder={isHindi ? 'आवेदन का विस्तृत विवरण लिखें...' : 'Write a detailed description of the application...'}
-                            className="resize-none"
-                        />
+                        {isHindi ? (
+                            <ReactTransliterate
+                                renderComponent={(props) => <Textarea {...props} className="resize-none" rows={5} />}
+                                value={formData.description}
+                                onChangeText={(text) => onChange('description', text)}
+                                lang="hi"
+                                placeholder="आवेदन का विस्तृत विवरण लिखें..."
+                                containerClassName="w-full"
+                            />
+                        ) : (
+                            <Textarea
+                                value={formData.description}
+                                onChange={(e) => onChange('description', e.target.value)}
+                                rows={5}
+                                placeholder="Write a detailed description of the application..."
+                                className="resize-none"
+                            />
+                        )}
                     </div>
                 </CardContent>
             </Card>
