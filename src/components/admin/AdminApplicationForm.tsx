@@ -7,8 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload, X, FileText, Image as ImageIcon, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Upload, X, FileText, Image as ImageIcon, Loader2, CheckCircle, AlertCircle, User, Briefcase, FileStack, Plus } from 'lucide-react';
 import { submitApplicationByAdmin } from '@/app/actions/application';
 
 interface UploadedFile {
@@ -149,10 +149,12 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
 
     if (success) {
         return (
-            <Card className="max-w-2xl mx-auto">
-                <CardContent className="pt-12 pb-12 text-center">
-                    <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold text-green-700 mb-2">
+            <Card className="max-w-2xl mx-auto shadow-lg border-0">
+                <CardContent className="py-16 text-center">
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <CheckCircle className="h-10 w-10 text-green-600" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
                         {isHindi ? 'आवेदन सफलतापूर्वक जमा हुआ!' : 'Application Submitted Successfully!'}
                     </h2>
                     <p className="text-gray-500">
@@ -164,44 +166,61 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
+            {/* Error Banner */}
             {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5" />
-                    {error}
+                <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-5 py-4 rounded-r-lg flex items-start gap-3">
+                    <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                    <span className="text-sm font-medium">{error}</span>
                 </div>
             )}
 
-            {/* Applicant Details */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>{isHindi ? 'आवेदक विवरण' : 'Applicant Details'}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid md:grid-cols-2 gap-4">
+            {/* Section 1: Applicant Details */}
+            <Card className="shadow-sm border-0 ring-1 ring-gray-100">
+                <CardHeader className="pb-4 border-b bg-gray-50/50">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
+                            <User className="h-5 w-5 text-orange-600" />
+                        </div>
                         <div>
-                            <Label>{isHindi ? 'नाम *' : 'Name *'}</Label>
+                            <CardTitle className="text-lg">{isHindi ? 'आवेदक विवरण' : 'Applicant Details'}</CardTitle>
+                            <CardDescription>{isHindi ? 'आवेदक की व्यक्तिगत जानकारी' : 'Personal information of the applicant'}</CardDescription>
+                        </div>
+                    </div>
+                </CardHeader>
+                <CardContent className="p-6 space-y-6">
+                    <div className="grid sm:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {isHindi ? 'नाम' : 'Name'} <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                                 value={formData.name}
                                 onChange={(e) => handleInputChange('name', e.target.value)}
                                 required
-                                placeholder={isHindi ? 'पूरा नाम' : 'Full name'}
+                                placeholder={isHindi ? 'पूरा नाम दर्ज करें' : 'Enter full name'}
+                                className="h-11"
                             />
                         </div>
-                        <div>
-                            <Label>{isHindi ? 'पिता का नाम *' : 'Father\'s Name *'}</Label>
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {isHindi ? 'पिता का नाम' : "Father's Name"} <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                                 value={formData.fatherName}
                                 onChange={(e) => handleInputChange('fatherName', e.target.value)}
                                 required
-                                placeholder={isHindi ? 'पिता का नाम' : 'Father\'s name'}
+                                placeholder={isHindi ? 'पिता का नाम दर्ज करें' : "Enter father's name"}
+                                className="h-11"
                             />
                         </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4">
-                        <div>
-                            <Label>{isHindi ? 'मोबाइल नंबर *' : 'Mobile Number *'}</Label>
+                    <div className="grid sm:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {isHindi ? 'मोबाइल नंबर' : 'Mobile Number'} <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                                 type="tel"
                                 value={formData.mobile}
@@ -209,13 +228,16 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
                                 required
                                 pattern="[0-9]{10}"
                                 placeholder="9876543210"
+                                className="h-11"
                             />
                         </div>
-                        <div>
-                            <Label>{isHindi ? 'विधानसभा *' : 'Vidhansabha *'}</Label>
+                        <div className="space-y-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {isHindi ? 'विधानसभा' : 'Vidhansabha'} <span className="text-red-500">*</span>
+                            </Label>
                             <Select value={formData.vidhansabhaId} onValueChange={(v) => handleInputChange('vidhansabhaId', v)}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder={isHindi ? 'चुनें' : 'Select'} />
+                                <SelectTrigger className="h-11">
+                                    <SelectValue placeholder={isHindi ? 'विधानसभा चुनें' : 'Select Vidhansabha'} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {vidhansabhas.map((v) => (
@@ -228,73 +250,113 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
                         </div>
                     </div>
 
-                    <div>
-                        <Label>{isHindi ? 'पता *' : 'Address *'}</Label>
+                    <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">
+                            {isHindi ? 'पता' : 'Address'} <span className="text-red-500">*</span>
+                        </Label>
                         <Textarea
                             value={formData.address}
                             onChange={(e) => handleInputChange('address', e.target.value)}
                             required
-                            rows={2}
-                            placeholder={isHindi ? 'पूरा पता' : 'Full address'}
+                            rows={3}
+                            placeholder={isHindi ? 'पूरा पता दर्ज करें' : 'Enter complete address'}
+                            className="resize-none"
                         />
                     </div>
                 </CardContent>
             </Card>
 
-            {/* Application Type */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>{isHindi ? 'आवेदक प्रकार' : 'Applicant Type'}</CardTitle>
+            {/* Section 2: Applicant Type */}
+            <Card className="shadow-sm border-0 ring-1 ring-gray-100">
+                <CardHeader className="pb-4 border-b bg-gray-50/50">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                            <Briefcase className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                            <CardTitle className="text-lg">{isHindi ? 'आवेदक प्रकार' : 'Applicant Type'}</CardTitle>
+                            <CardDescription>{isHindi ? 'आवेदक की श्रेणी चुनें' : 'Select the category of applicant'}</CardDescription>
+                        </div>
+                    </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="flex gap-4">
-                        <label className="flex items-center gap-2 cursor-pointer">
+                <CardContent className="p-6 space-y-6">
+                    <div className="grid sm:grid-cols-2 gap-4">
+                        <label
+                            className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${formData.type === 'CITIZEN'
+                                    ? 'border-orange-500 bg-orange-50'
+                                    : 'border-gray-200 hover:border-gray-300'
+                                }`}
+                        >
                             <input
                                 type="radio"
                                 value="CITIZEN"
                                 checked={formData.type === 'CITIZEN'}
                                 onChange={(e) => handleInputChange('type', e.target.value)}
-                                className="w-4 h-4 text-orange-600"
+                                className="w-5 h-5 text-orange-600"
                             />
-                            {isHindi ? 'नागरिक' : 'Citizen'}
+                            <div>
+                                <div className="font-medium text-gray-900">{isHindi ? 'नागरिक' : 'Citizen'}</div>
+                                <div className="text-sm text-gray-500">{isHindi ? 'सामान्य नागरिक' : 'General citizen'}</div>
+                            </div>
                         </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
+                        <label
+                            className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${formData.type === 'PUBLIC_REP'
+                                    ? 'border-orange-500 bg-orange-50'
+                                    : 'border-gray-200 hover:border-gray-300'
+                                }`}
+                        >
                             <input
                                 type="radio"
                                 value="PUBLIC_REP"
                                 checked={formData.type === 'PUBLIC_REP'}
                                 onChange={(e) => handleInputChange('type', e.target.value)}
-                                className="w-4 h-4 text-orange-600"
+                                className="w-5 h-5 text-orange-600"
                             />
-                            {isHindi ? 'जनप्रतिनिधि' : 'Public Representative'}
+                            <div>
+                                <div className="font-medium text-gray-900">{isHindi ? 'जनप्रतिनिधि' : 'Public Representative'}</div>
+                                <div className="text-sm text-gray-500">{isHindi ? 'निर्वाचित प्रतिनिधि' : 'Elected representative'}</div>
+                            </div>
                         </label>
                     </div>
 
                     {formData.type === 'PUBLIC_REP' && (
-                        <div>
-                            <Label>{isHindi ? 'पद *' : 'Post/Designation *'}</Label>
+                        <div className="space-y-2 pt-2">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {isHindi ? 'पद / पदनाम' : 'Post / Designation'} <span className="text-red-500">*</span>
+                            </Label>
                             <Input
                                 value={formData.post}
                                 onChange={(e) => handleInputChange('post', e.target.value)}
                                 required
-                                placeholder={isHindi ? 'पद का नाम' : 'Designation'}
+                                placeholder={isHindi ? 'जैसे: सरपंच, पार्षद, विधायक' : 'e.g., Sarpanch, Councilor, MLA'}
+                                className="h-11"
                             />
                         </div>
                     )}
                 </CardContent>
             </Card>
 
-            {/* Work Details */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>{isHindi ? 'कार्य विवरण' : 'Work Details'}</CardTitle>
+            {/* Section 3: Work Details */}
+            <Card className="shadow-sm border-0 ring-1 ring-gray-100">
+                <CardHeader className="pb-4 border-b bg-gray-50/50">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                            <FileText className="h-5 w-5 text-green-600" />
+                        </div>
+                        <div>
+                            <CardTitle className="text-lg">{isHindi ? 'कार्य विवरण' : 'Work Details'}</CardTitle>
+                            <CardDescription>{isHindi ? 'आवेदन का कार्य प्रकार और विवरण' : 'Type of work and description'}</CardDescription>
+                        </div>
+                    </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                    <div>
-                        <Label>{isHindi ? 'कार्य का प्रकार *' : 'Type of Work *'}</Label>
+                <CardContent className="p-6 space-y-6">
+                    <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">
+                            {isHindi ? 'कार्य का प्रकार' : 'Type of Work'} <span className="text-red-500">*</span>
+                        </Label>
                         <Select value={formData.workTypeId} onValueChange={(v) => handleInputChange('workTypeId', v)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder={isHindi ? 'चुनें' : 'Select'} />
+                            <SelectTrigger className="h-11">
+                                <SelectValue placeholder={isHindi ? 'कार्य प्रकार चुनें' : 'Select work type'} />
                             </SelectTrigger>
                             <SelectContent>
                                 {workTypes.map((w) => (
@@ -306,48 +368,75 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
                         </Select>
                     </div>
 
-                    <div>
-                        <Label>{isHindi ? 'विवरण' : 'Description'}</Label>
+                    <div className="space-y-2">
+                        <Label className="text-sm font-medium text-gray-700">
+                            {isHindi ? 'विस्तृत विवरण' : 'Detailed Description'}
+                        </Label>
                         <Textarea
                             value={formData.description}
                             onChange={(e) => handleInputChange('description', e.target.value)}
-                            rows={4}
-                            placeholder={isHindi ? 'आवेदन का विस्तृत विवरण' : 'Detailed description of the application'}
+                            rows={5}
+                            placeholder={isHindi ? 'आवेदन का विस्तृत विवरण लिखें...' : 'Write a detailed description of the application...'}
+                            className="resize-none"
                         />
                     </div>
                 </CardContent>
             </Card>
 
-            {/* File Uploads */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>{isHindi ? 'दस्तावेज़ अपलोड' : 'Document Upload'}</CardTitle>
+            {/* Section 4: Document Upload */}
+            <Card className="shadow-sm border-0 ring-1 ring-gray-100">
+                <CardHeader className="pb-4 border-b bg-gray-50/50">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                            <FileStack className="h-5 w-5 text-purple-600" />
+                        </div>
+                        <div>
+                            <CardTitle className="text-lg">{isHindi ? 'दस्तावेज़ अपलोड' : 'Document Upload'}</CardTitle>
+                            <CardDescription>{isHindi ? 'संबंधित दस्तावेज़ और फोटो अपलोड करें' : 'Upload related documents and photos'}</CardDescription>
+                        </div>
+                    </div>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="p-6 space-y-8">
                     {/* PDF Upload */}
-                    <div>
-                        <Label className="mb-2 block">
-                            {isHindi ? 'PDF दस्तावेज़ (अधिकतम 5MB)' : 'PDF Document (max 5MB)'}
-                        </Label>
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {isHindi ? 'PDF दस्तावेज़' : 'PDF Document'}
+                            </Label>
+                            <span className="text-xs text-gray-400">{isHindi ? 'अधिकतम 5MB' : 'Max 5MB'}</span>
+                        </div>
                         {pdfFile ? (
-                            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
-                                <div className="flex items-center gap-2">
-                                    <FileText className="h-5 w-5 text-red-500" />
-                                    <span className="text-sm truncate max-w-xs">{pdfFile.originalName}</span>
-                                    <span className="text-xs text-gray-400">({(pdfFile.size / 1024 / 1024).toFixed(2)}MB)</span>
+                            <div className="flex items-center justify-between p-4 bg-red-50 rounded-xl border border-red-100">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                        <FileText className="h-5 w-5 text-red-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-900 truncate max-w-[200px] sm:max-w-xs">
+                                            {pdfFile.originalName}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                            {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
+                                        </p>
+                                    </div>
                                 </div>
-                                <Button type="button" variant="ghost" size="sm" onClick={removePdf}>
+                                <Button type="button" variant="ghost" size="sm" onClick={removePdf} className="text-red-600 hover:text-red-700 hover:bg-red-100">
                                     <X className="h-4 w-4" />
                                 </Button>
                             </div>
                         ) : (
                             <div
                                 onClick={() => pdfInputRef.current?.click()}
-                                className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-orange-400 transition-colors"
+                                className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50/30 transition-all group"
                             >
-                                <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                                <p className="text-sm text-gray-500">
-                                    {isHindi ? 'PDF अपलोड करने के लिए क्लिक करें' : 'Click to upload PDF'}
+                                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-orange-100 transition-colors">
+                                    <Upload className="h-5 w-5 text-gray-400 group-hover:text-orange-600 transition-colors" />
+                                </div>
+                                <p className="text-sm font-medium text-gray-700">
+                                    {isHindi ? 'PDF फ़ाइल अपलोड करें' : 'Upload PDF file'}
+                                </p>
+                                <p className="text-xs text-gray-400 mt-1">
+                                    {isHindi ? 'क्लिक करें या खींचकर छोड़ें' : 'Click or drag and drop'}
                                 </p>
                             </div>
                         )}
@@ -361,38 +450,48 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
                     </div>
 
                     {/* Image Uploads */}
-                    <div>
-                        <Label className="mb-2 block">
-                            {isHindi ? 'फोटो/चित्र (प्रत्येक अधिकतम 2MB)' : 'Images/Photos (max 2MB each)'}
-                        </Label>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <Label className="text-sm font-medium text-gray-700">
+                                {isHindi ? 'फोटो / चित्र' : 'Photos / Images'}
+                            </Label>
+                            <span className="text-xs text-gray-400">{isHindi ? 'प्रत्येक अधिकतम 2MB' : 'Max 2MB each'}</span>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                             {images.map((img, index) => (
-                                <div key={index} className="relative group">
+                                <div key={index} className="relative group aspect-square">
                                     <img
                                         src={img.url}
                                         alt={img.originalName}
-                                        className="w-full h-24 object-cover rounded-lg border"
+                                        className="w-full h-full object-cover rounded-xl border border-gray-200"
                                     />
-                                    <Button
-                                        type="button"
-                                        variant="destructive"
-                                        size="sm"
-                                        className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        onClick={() => removeImage(index)}
-                                    >
-                                        <X className="h-3 w-3" />
-                                    </Button>
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                                        <Button
+                                            type="button"
+                                            variant="destructive"
+                                            size="sm"
+                                            className="h-8 w-8 p-0 rounded-full"
+                                            onClick={() => removeImage(index)}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                    <p className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 rounded-b-xl truncate text-center">
+                                        {img.originalName}
+                                    </p>
                                 </div>
                             ))}
 
                             {/* Add Image Button */}
                             <div
                                 onClick={() => imageInputRef.current?.click()}
-                                className="h-24 border-2 border-dashed rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-orange-400 transition-colors"
+                                className="aspect-square border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-orange-400 hover:bg-orange-50/30 transition-all group"
                             >
-                                <ImageIcon className="h-6 w-6 text-gray-400" />
-                                <span className="text-xs text-gray-400 mt-1">
-                                    {isHindi ? '+ जोड़ें' : '+ Add'}
+                                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mb-2 group-hover:bg-orange-100 transition-colors">
+                                    <Plus className="h-5 w-5 text-gray-400 group-hover:text-orange-600 transition-colors" />
+                                </div>
+                                <span className="text-xs text-gray-500 group-hover:text-orange-600 transition-colors">
+                                    {isHindi ? 'फोटो जोड़ें' : 'Add Photo'}
                                 </span>
                             </div>
                         </div>
@@ -405,32 +504,38 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
                         />
                     </div>
 
+                    {/* Upload Status */}
                     {uploading && (
-                        <div className="flex items-center gap-2 text-orange-600">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            {isHindi ? 'अपलोड हो रहा है...' : 'Uploading...'}
+                        <div className="flex items-center justify-center gap-3 p-4 bg-orange-50 rounded-xl">
+                            <Loader2 className="h-5 w-5 animate-spin text-orange-600" />
+                            <span className="text-sm font-medium text-orange-700">
+                                {isHindi ? 'अपलोड हो रहा है...' : 'Uploading...'}
+                            </span>
                         </div>
                     )}
                 </CardContent>
             </Card>
 
-            {/* Submit Button */}
-            <div className="flex justify-end gap-4">
+            {/* Submit Actions */}
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4">
                 <Button
                     type="button"
                     variant="outline"
+                    size="lg"
                     onClick={() => router.back()}
+                    className="h-12 px-8"
                 >
                     {isHindi ? 'रद्द करें' : 'Cancel'}
                 </Button>
                 <Button
                     type="submit"
+                    size="lg"
                     disabled={submitting || uploading}
-                    className="bg-orange-600 hover:bg-orange-700"
+                    className="h-12 px-8 bg-orange-600 hover:bg-orange-700"
                 >
                     {submitting ? (
                         <>
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                             {isHindi ? 'जमा हो रहा है...' : 'Submitting...'}
                         </>
                     ) : (

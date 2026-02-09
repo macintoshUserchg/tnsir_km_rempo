@@ -1,10 +1,9 @@
 import { setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Eye, Download } from 'lucide-react';
+import { Eye, Download, Search, Filter, FileText, User, Phone, MapPin, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import prisma from '@/lib/db';
 
 type Props = {
@@ -31,7 +30,7 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
     }
 
     // Fetch applications
-    const [applications, totalCount, vidhansabhas] = await Promise.all([
+    const [applications, totalCount, vidhansabhas, statusCounts] = await Promise.all([
         prisma.citizenApp.findMany({
             where,
             orderBy: { createdAt: 'desc' },
@@ -44,133 +43,225 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
         }),
         prisma.citizenApp.count({ where }),
         prisma.vidhansabha.findMany(),
+        Promise.all([
+            prisma.citizenApp.count({ where: { status: 'PENDING' } }),
+            prisma.citizenApp.count({ where: { status: 'IN_PROGRESS' } }),
+            prisma.citizenApp.count({ where: { status: 'RESOLVED' } }),
+            prisma.citizenApp.count({ where: { status: 'REJECTED' } }),
+        ]),
     ]);
 
     const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-    const statusColors: Record<string, string> = {
-        PENDING: 'bg-yellow-100 text-yellow-700',
-        IN_PROGRESS: 'bg-blue-100 text-blue-700',
-        RESOLVED: 'bg-green-100 text-green-700',
-        REJECTED: 'bg-red-100 text-red-700',
+    const statusConfig: Record<string, { label: { hi: string; en: string }; style: string; count: number }> = {
+        PENDING: { label: { hi: 'लंबित', en: 'Pending' }, style: 'bg-amber-100 text-amber-700 ring-1 ring-amber-200', count: statusCounts[0] },
+        IN_PROGRESS: { label: { hi: 'प्रगति में', en: 'In Progress' }, style: 'bg-purple-100 text-purple-700 ring-1 ring-purple-200', count: statusCounts[1] },
+        RESOLVED: { label: { hi: 'समाधान', en: 'Resolved' }, style: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200', count: statusCounts[2] },
+        REJECTED: { label: { hi: 'अस्वीकृत', en: 'Rejected' }, style: 'bg-red-100 text-red-700 ring-1 ring-red-200', count: statusCounts[3] },
     };
 
-    const statusLabels: Record<string, Record<string, string>> = {
-        PENDING: { hi: 'लंबित', en: 'Pending' },
-        IN_PROGRESS: { hi: 'प्रगति में', en: 'In Progress' },
-        RESOLVED: { hi: 'समाधान', en: 'Resolved' },
-        REJECTED: { hi: 'अस्वीकृत', en: 'Rejected' },
-    };
+    const allFilters = [
+        { key: '', label: { hi: 'सभी', en: 'All' }, count: statusCounts.reduce((a, b) => a + b, 0) },
+        ...Object.entries(statusConfig).map(([key, config]) => ({ key, label: config.label, count: config.count })),
+    ];
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            {/* Page Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                         {isHindi ? 'आवेदन सूची' : 'Applications'}
                     </h1>
-                    <p className="text-gray-500">
+                    <p className="text-gray-500 mt-1">
                         {isHindi ? `कुल ${totalCount} आवेदन` : `Total ${totalCount} applications`}
                     </p>
                 </div>
-                <Button variant="outline">
-                    <Download className="h-4 w-4 mr-2" />
-                    {isHindi ? 'निर्यात' : 'Export'}
-                </Button>
+                <div className="flex items-center gap-3">
+                    <a href="/api/export/applications" target="_blank">
+                        <Button variant="outline" className="gap-2">
+                            <Download className="h-4 w-4" />
+                            {isHindi ? 'Excel निर्यात' : 'Export Excel'}
+                        </Button>
+                    </a>
+                    <Link href="/admin/applications/new">
+                        <Button className="bg-orange-600 hover:bg-orange-700 gap-2">
+                            <Plus className="h-4 w-4" />
+                            {isHindi ? 'नया आवेदन' : 'New Application'}
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
-            {/* Filters */}
-            <Card>
-                <CardContent className="py-4">
-                    <div className="flex flex-wrap gap-4">
-                        <div className="flex gap-2">
-                            {['', 'PENDING', 'IN_PROGRESS', 'RESOLVED', 'REJECTED'].map((s) => (
-                                <Link
-                                    key={s}
-                                    href={`/admin/applications${s ? `?status=${s}` : ''}`}
+            {/* Status Filters */}
+            <Card className="border-0 shadow-sm">
+                <CardContent className="p-4">
+                    <div className="flex flex-wrap gap-2">
+                        {allFilters.map((filter) => (
+                            <Link
+                                key={filter.key}
+                                href={`/admin/applications${filter.key ? `?status=${filter.key}` : ''}`}
+                            >
+                                <button
+                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${status === filter.key || (!status && !filter.key)
+                                            ? 'bg-orange-600 text-white shadow-sm'
+                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        }`}
                                 >
-                                    <Badge
-                                        variant={status === s || (!status && !s) ? 'default' : 'outline'}
-                                        className="cursor-pointer"
-                                    >
-                                        {s ? (isHindi ? statusLabels[s].hi : statusLabels[s].en) : (isHindi ? 'सभी' : 'All')}
-                                    </Badge>
-                                </Link>
-                            ))}
-                        </div>
+                                    {isHindi ? filter.label.hi : filter.label.en}
+                                    <span className={`text-xs px-1.5 py-0.5 rounded-full ${status === filter.key || (!status && !filter.key)
+                                            ? 'bg-white/20 text-white'
+                                            : 'bg-gray-200 text-gray-500'
+                                        }`}>
+                                        {filter.count}
+                                    </span>
+                                </button>
+                            </Link>
+                        ))}
                     </div>
                 </CardContent>
             </Card>
 
-            {/* Applications Table */}
-            <Card>
-                <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>{isHindi ? 'क्रमांक' : 'C.No.'}</TableHead>
-                                <TableHead>{isHindi ? 'नाम' : 'Name'}</TableHead>
-                                <TableHead>{isHindi ? 'विधानसभा' : 'Vidhansabha'}</TableHead>
-                                <TableHead>{isHindi ? 'कार्य प्रकार' : 'Work Type'}</TableHead>
-                                <TableHead>{isHindi ? 'स्थिति' : 'Status'}</TableHead>
-                                <TableHead>{isHindi ? 'दिनांक' : 'Date'}</TableHead>
-                                <TableHead>{isHindi ? 'क्रियाएँ' : 'Actions'}</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {applications.map((app) => (
-                                <TableRow key={app.id}>
-                                    <TableCell className="font-mono text-sm">{app.cNumber}</TableCell>
-                                    <TableCell>
-                                        <div>
-                                            <p className="font-medium">{app.name}</p>
-                                            <p className="text-xs text-gray-500">{app.mobile}</p>
+            {/* Applications Grid/List */}
+            <div className="space-y-3">
+                {applications.length > 0 ? (
+                    applications.map((app) => (
+                        <Link key={app.id} href={`/admin/applications/${app.id}`}>
+                            <Card className="border-0 shadow-sm hover:shadow-md transition-all cursor-pointer group">
+                                <CardContent className="p-0">
+                                    <div className="flex items-center">
+                                        {/* Left Color Bar */}
+                                        <div className={`w-1.5 self-stretch rounded-l-xl ${app.status === 'PENDING' ? 'bg-amber-500' :
+                                                app.status === 'IN_PROGRESS' ? 'bg-purple-500' :
+                                                    app.status === 'RESOLVED' ? 'bg-emerald-500' :
+                                                        'bg-red-500'
+                                            }`} />
+
+                                        <div className="flex-1 p-5 flex items-center justify-between gap-4">
+                                            <div className="flex items-center gap-4">
+                                                {/* Avatar */}
+                                                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                                    <User className="h-5 w-5 text-gray-500" />
+                                                </div>
+
+                                                {/* Info */}
+                                                <div className="min-w-0">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors truncate">
+                                                            {app.name}
+                                                        </h3>
+                                                        <span className="text-xs font-mono text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
+                                                            {app.cNumber}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                                                        <span className="flex items-center gap-1">
+                                                            <Phone className="h-3.5 w-3.5" />
+                                                            {app.mobile}
+                                                        </span>
+                                                        <span className="flex items-center gap-1">
+                                                            <MapPin className="h-3.5 w-3.5" />
+                                                            {isHindi ? app.vidhansabha.nameHi : (app.vidhansabha.nameEn || app.vidhansabha.nameHi)}
+                                                        </span>
+                                                        <span className="hidden sm:inline-flex items-center gap-1">
+                                                            <FileText className="h-3.5 w-3.5" />
+                                                            {isHindi ? app.workType.nameHi : (app.workType.nameEn || app.workType.nameHi)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Right Side */}
+                                            <div className="flex items-center gap-4 flex-shrink-0">
+                                                <div className="text-right">
+                                                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${statusConfig[app.status]?.style || 'bg-gray-100'}`}>
+                                                        {isHindi ? statusConfig[app.status]?.label.hi : statusConfig[app.status]?.label.en}
+                                                    </span>
+                                                    <p className="text-xs text-gray-400 mt-1.5">
+                                                        {new Date(app.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-IN', {
+                                                            day: 'numeric',
+                                                            month: 'short',
+                                                            year: 'numeric',
+                                                        })}
+                                                    </p>
+                                                </div>
+                                                <Eye className="h-5 w-5 text-gray-300 group-hover:text-orange-500 transition-colors" />
+                                            </div>
                                         </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        {isHindi ? app.vidhansabha.nameHi : (app.vidhansabha.nameEn || app.vidhansabha.nameHi)}
-                                    </TableCell>
-                                    <TableCell>
-                                        {isHindi ? app.workType.nameHi : (app.workType.nameEn || app.workType.nameHi)}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge className={statusColors[app.status]}>
-                                            {isHindi ? statusLabels[app.status].hi : statusLabels[app.status].en}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell className="text-sm">
-                                        {new Date(app.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-IN')}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Link href={`/admin/applications/${app.id}`}>
-                                            <Button variant="ghost" size="sm">
-                                                <Eye className="h-4 w-4" />
-                                            </Button>
-                                        </Link>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </Link>
+                    ))
+                ) : (
+                    <Card className="border-0 shadow-sm">
+                        <CardContent className="py-16 text-center">
+                            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                                <FileText className="h-8 w-8 text-gray-400" />
+                            </div>
+                            <p className="text-gray-500 font-medium">
+                                {isHindi ? 'कोई आवेदन नहीं मिला' : 'No applications found'}
+                            </p>
+                            <p className="text-sm text-gray-400 mt-1">
+                                {isHindi ? 'इस फ़िल्टर के लिए कोई आवेदन नहीं है' : 'There are no applications for this filter'}
+                            </p>
+                        </CardContent>
+                    </Card>
+                )}
+            </div>
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="flex justify-center gap-2">
-                    {currentPage > 1 && (
-                        <Link href={`/admin/applications?page=${currentPage - 1}${status ? `&status=${status}` : ''}`}>
-                            <Button variant="outline" size="sm">{isHindi ? 'पिछला' : 'Previous'}</Button>
-                        </Link>
-                    )}
-                    <span className="flex items-center px-4 text-sm text-gray-600">
-                        {currentPage} / {totalPages}
-                    </span>
-                    {currentPage < totalPages && (
-                        <Link href={`/admin/applications?page=${currentPage + 1}${status ? `&status=${status}` : ''}`}>
-                            <Button variant="outline" size="sm">{isHindi ? 'अगला' : 'Next'}</Button>
-                        </Link>
-                    )}
+                <div className="flex items-center justify-center gap-2">
+                    <Link href={`/admin/applications?page=${Math.max(1, currentPage - 1)}${status ? `&status=${status}` : ''}`}>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={currentPage <= 1}
+                            className="gap-1"
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                            {isHindi ? 'पिछला' : 'Previous'}
+                        </Button>
+                    </Link>
+
+                    <div className="flex items-center gap-1">
+                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                            let pageNum;
+                            if (totalPages <= 5) {
+                                pageNum = i + 1;
+                            } else if (currentPage <= 3) {
+                                pageNum = i + 1;
+                            } else if (currentPage >= totalPages - 2) {
+                                pageNum = totalPages - 4 + i;
+                            } else {
+                                pageNum = currentPage - 2 + i;
+                            }
+                            return (
+                                <Link key={pageNum} href={`/admin/applications?page=${pageNum}${status ? `&status=${status}` : ''}`}>
+                                    <Button
+                                        variant={currentPage === pageNum ? 'default' : 'ghost'}
+                                        size="sm"
+                                        className={`w-10 ${currentPage === pageNum ? 'bg-orange-600 hover:bg-orange-700' : ''}`}
+                                    >
+                                        {pageNum}
+                                    </Button>
+                                </Link>
+                            );
+                        })}
+                    </div>
+
+                    <Link href={`/admin/applications?page=${Math.min(totalPages, currentPage + 1)}${status ? `&status=${status}` : ''}`}>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={currentPage >= totalPages}
+                            className="gap-1"
+                        >
+                            {isHindi ? 'अगला' : 'Next'}
+                            <ChevronRight className="h-4 w-4" />
+                        </Button>
+                    </Link>
                 </div>
             )}
         </div>

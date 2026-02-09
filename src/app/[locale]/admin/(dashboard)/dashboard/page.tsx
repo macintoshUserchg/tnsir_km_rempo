@@ -1,6 +1,8 @@
 import { setRequestLocale } from 'next-intl/server';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { FileText, Clock, CheckCircle, XCircle, TrendingUp, ArrowRight, Calendar, MapPin, User, Eye } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 import prisma from '@/lib/db';
 
 type Props = {
@@ -10,13 +12,13 @@ type Props = {
 export default async function AdminDashboardPage({ params }: Props) {
     const { locale } = await params;
     setRequestLocale(locale);
-
     const isHindi = locale === 'hi';
 
     // Fetch statistics
-    const [totalApplications, pendingApplications, resolvedApplications, rejectedApplications] = await Promise.all([
+    const [totalApplications, pendingApplications, inProgressApplications, resolvedApplications, rejectedApplications] = await Promise.all([
         prisma.citizenApp.count(),
         prisma.citizenApp.count({ where: { status: 'PENDING' } }),
+        prisma.citizenApp.count({ where: { status: 'IN_PROGRESS' } }),
         prisma.citizenApp.count({ where: { status: 'RESOLVED' } }),
         prisma.citizenApp.count({ where: { status: 'REJECTED' } }),
     ]);
@@ -31,102 +33,241 @@ export default async function AdminDashboardPage({ params }: Props) {
         },
     });
 
+    // Today's applications
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayApplications = await prisma.citizenApp.count({
+        where: { createdAt: { gte: today } }
+    });
+
     const stats = [
         {
             title: isHindi ? 'कुल आवेदन' : 'Total Applications',
             value: totalApplications,
             icon: FileText,
-            color: 'bg-blue-500',
+            gradient: 'from-blue-500 to-blue-600',
+            bgLight: 'bg-blue-50',
+            textColor: 'text-blue-600',
         },
         {
             title: isHindi ? 'लंबित' : 'Pending',
             value: pendingApplications,
             icon: Clock,
-            color: 'bg-yellow-500',
+            gradient: 'from-amber-500 to-orange-500',
+            bgLight: 'bg-amber-50',
+            textColor: 'text-amber-600',
+        },
+        {
+            title: isHindi ? 'प्रगति में' : 'In Progress',
+            value: inProgressApplications,
+            icon: TrendingUp,
+            gradient: 'from-purple-500 to-purple-600',
+            bgLight: 'bg-purple-50',
+            textColor: 'text-purple-600',
         },
         {
             title: isHindi ? 'समाधान' : 'Resolved',
             value: resolvedApplications,
             icon: CheckCircle,
-            color: 'bg-green-500',
-        },
-        {
-            title: isHindi ? 'अस्वीकृत' : 'Rejected',
-            value: rejectedApplications,
-            icon: XCircle,
-            color: 'bg-red-500',
+            gradient: 'from-emerald-500 to-green-600',
+            bgLight: 'bg-emerald-50',
+            textColor: 'text-emerald-600',
         },
     ];
 
+    const getStatusBadge = (status: string) => {
+        const styles = {
+            PENDING: 'bg-amber-100 text-amber-700 ring-1 ring-amber-200',
+            IN_PROGRESS: 'bg-purple-100 text-purple-700 ring-1 ring-purple-200',
+            RESOLVED: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200',
+            REJECTED: 'bg-red-100 text-red-700 ring-1 ring-red-200',
+        };
+        const labels = isHindi ? {
+            PENDING: 'लंबित',
+            IN_PROGRESS: 'प्रगति में',
+            RESOLVED: 'समाधान',
+            REJECTED: 'अस्वीकृत',
+        } : {
+            PENDING: 'Pending',
+            IN_PROGRESS: 'In Progress',
+            RESOLVED: 'Resolved',
+            REJECTED: 'Rejected',
+        };
+        return (
+            <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${styles[status as keyof typeof styles] || styles.PENDING}`}>
+                {labels[status as keyof typeof labels] || status}
+            </span>
+        );
+    };
+
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold">
-                    {isHindi ? 'डैशबोर्ड' : 'Dashboard'}
-                </h1>
-                <p className="text-gray-500">
-                    {isHindi ? 'आवेदनों और गतिविधियों का अवलोकन' : 'Overview of applications and activities'}
-                </p>
+        <div className="space-y-8">
+            {/* Page Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                        {isHindi ? 'डैशबोर्ड' : 'Dashboard'}
+                    </h1>
+                    <p className="text-gray-500 mt-1">
+                        {isHindi ? 'आवेदनों और गतिविधियों का अवलोकन' : 'Overview of applications and activities'}
+                    </p>
+                </div>
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-orange-50 rounded-xl">
+                        <Calendar className="h-4 w-4 text-orange-600" />
+                        <span className="text-sm font-medium text-orange-700">
+                            {isHindi ? `आज: ${todayApplications} नए` : `Today: ${todayApplications} new`}
+                        </span>
+                    </div>
+                    <Link href="/admin/applications/new">
+                        <Button className="bg-orange-600 hover:bg-orange-700">
+                            {isHindi ? '+ नया आवेदन' : '+ New Application'}
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {stats.map((stat, index) => (
-                    <Card key={index}>
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium text-gray-500">
-                                {stat.title}
-                            </CardTitle>
-                            <div className={`p-2 rounded-lg ${stat.color}`}>
-                                <stat.icon className="h-4 w-4 text-white" />
+                    <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                        <CardContent className="p-0">
+                            <div className="flex items-stretch">
+                                <div className={`w-2 bg-gradient-to-b ${stat.gradient}`} />
+                                <div className="flex-1 p-5">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <span className="text-sm font-medium text-gray-500">{stat.title}</span>
+                                        <div className={`w-10 h-10 rounded-xl ${stat.bgLight} flex items-center justify-center`}>
+                                            <stat.icon className={`h-5 w-5 ${stat.textColor}`} />
+                                        </div>
+                                    </div>
+                                    <div className="text-3xl font-bold text-gray-900">{stat.value.toLocaleString()}</div>
+                                </div>
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold">{stat.value}</div>
                         </CardContent>
                     </Card>
                 ))}
             </div>
 
+            {/* Quick Stats Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                {/* Rejected Count */}
+                <Card className="border-0 shadow-sm bg-gradient-to-br from-red-50 to-rose-50">
+                    <CardContent className="p-5 flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
+                            <XCircle className="h-6 w-6 text-red-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500">{isHindi ? 'अस्वीकृत आवेदन' : 'Rejected Applications'}</p>
+                            <p className="text-2xl font-bold text-gray-900">{rejectedApplications}</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Resolution Rate */}
+                <Card className="border-0 shadow-sm bg-gradient-to-br from-emerald-50 to-green-50">
+                    <CardContent className="p-5 flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+                            <TrendingUp className="h-6 w-6 text-emerald-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500">{isHindi ? 'समाधान दर' : 'Resolution Rate'}</p>
+                            <p className="text-2xl font-bold text-gray-900">
+                                {totalApplications > 0 ? ((resolvedApplications / totalApplications) * 100).toFixed(1) : 0}%
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Pending Rate */}
+                <Card className="border-0 shadow-sm bg-gradient-to-br from-amber-50 to-yellow-50">
+                    <CardContent className="p-5 flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
+                            <Clock className="h-6 w-6 text-amber-600" />
+                        </div>
+                        <div>
+                            <p className="text-sm text-gray-500">{isHindi ? 'लंबित दर' : 'Pending Rate'}</p>
+                            <p className="text-2xl font-bold text-gray-900">
+                                {totalApplications > 0 ? ((pendingApplications / totalApplications) * 100).toFixed(1) : 0}%
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
             {/* Recent Applications */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>{isHindi ? 'हाल के आवेदन' : 'Recent Applications'}</CardTitle>
+            <Card className="border-0 shadow-sm">
+                <CardHeader className="pb-4 border-b bg-gray-50/50">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle className="text-lg">{isHindi ? 'हाल के आवेदन' : 'Recent Applications'}</CardTitle>
+                            <CardDescription>{isHindi ? 'नवीनतम 5 आवेदन' : 'Latest 5 applications'}</CardDescription>
+                        </div>
+                        <Link href="/admin/applications">
+                            <Button variant="outline" size="sm" className="gap-2">
+                                {isHindi ? 'सभी देखें' : 'View All'}
+                                <ArrowRight className="h-4 w-4" />
+                            </Button>
+                        </Link>
+                    </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-0">
                     {recentApplications.length > 0 ? (
-                        <div className="space-y-4">
+                        <div className="divide-y">
                             {recentApplications.map((app) => (
-                                <div
+                                <Link
                                     key={app.id}
-                                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                                    href={`/admin/applications/${app.id}`}
+                                    className="flex items-center justify-between p-5 hover:bg-gray-50 transition-colors group"
                                 >
-                                    <div>
-                                        <p className="font-medium">{app.name}</p>
-                                        <p className="text-sm text-gray-500">
-                                            {isHindi ? app.vidhansabha.nameHi : (app.vidhansabha.nameEn || app.vidhansabha.nameHi)} •
-                                            {isHindi ? app.workType.nameHi : (app.workType.nameEn || app.workType.nameHi)}
-                                        </p>
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                                            <User className="h-5 w-5 text-gray-500" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">
+                                                {app.name}
+                                            </p>
+                                            <div className="flex items-center gap-3 text-sm text-gray-500 mt-0.5">
+                                                <span className="flex items-center gap-1">
+                                                    <MapPin className="h-3.5 w-3.5" />
+                                                    {isHindi ? app.vidhansabha.nameHi : (app.vidhansabha.nameEn || app.vidhansabha.nameHi)}
+                                                </span>
+                                                <span>•</span>
+                                                <span>
+                                                    {isHindi ? app.workType.nameHi : (app.workType.nameEn || app.workType.nameHi)}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="text-right">
-                                        <span className={`px-2 py-1 rounded text-xs font-medium ${app.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-                                                app.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-700' :
-                                                    app.status === 'RESOLVED' ? 'bg-green-100 text-green-700' :
-                                                        'bg-red-100 text-red-700'
-                                            }`}>
-                                            {app.status}
-                                        </span>
-                                        <p className="text-xs text-gray-500 mt-1">
-                                            {new Date(app.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-IN')}
-                                        </p>
+                                    <div className="flex items-center gap-4">
+                                        <div className="text-right">
+                                            {getStatusBadge(app.status)}
+                                            <p className="text-xs text-gray-400 mt-1.5">
+                                                {new Date(app.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-IN', {
+                                                    day: 'numeric',
+                                                    month: 'short',
+                                                    year: 'numeric',
+                                                })}
+                                            </p>
+                                        </div>
+                                        <Eye className="h-4 w-4 text-gray-300 group-hover:text-orange-500 transition-colors" />
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     ) : (
-                        <p className="text-gray-500 text-center py-8">
-                            {isHindi ? 'कोई आवेदन नहीं मिला' : 'No applications found'}
-                        </p>
+                        <div className="py-16 text-center">
+                            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
+                                <FileText className="h-8 w-8 text-gray-400" />
+                            </div>
+                            <p className="text-gray-500 font-medium">
+                                {isHindi ? 'कोई आवेदन नहीं मिला' : 'No applications found'}
+                            </p>
+                            <p className="text-sm text-gray-400 mt-1">
+                                {isHindi ? 'नया आवेदन जोड़ने के लिए बटन पर क्लिक करें' : 'Click the button to add a new application'}
+                            </p>
+                        </div>
                     )}
                 </CardContent>
             </Card>
