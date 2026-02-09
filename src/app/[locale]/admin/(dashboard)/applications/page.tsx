@@ -6,15 +6,16 @@ import { Badge } from '@/components/ui/badge';
 import { Eye, Download, Search, Filter, FileText, User, Phone, MapPin, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import prisma from '@/lib/db';
 import ApplicationStatusBadge from '@/components/admin/ApplicationStatusBadge';
+import ApplicationSearch from '@/components/admin/ApplicationSearch';
 
 type Props = {
     params: Promise<{ locale: string }>;
-    searchParams: Promise<{ page?: string; status?: string; vidhansabha?: string }>;
+    searchParams: Promise<{ page?: string; status?: string; vidhansabha?: string; query?: string }>;
 };
 
 export default async function ApplicationsPage({ params, searchParams }: Props) {
     const { locale } = await params;
-    const { page = '1', status, vidhansabha } = await searchParams;
+    const { page = '1', status, vidhansabha, query } = await searchParams;
     setRequestLocale(locale);
 
     const isHindi = locale === 'hi';
@@ -23,11 +24,19 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
 
     // Build where clause
     const where: Record<string, unknown> = {};
-    if (status) {
+    if (status && status !== 'ALL') {
         where.status = status;
     }
-    if (vidhansabha) {
+    if (vidhansabha && vidhansabha !== 'ALL') {
         where.vidhansabhaId = parseInt(vidhansabha);
+    }
+    if (query) {
+        where.OR = [
+            { name: { contains: query, mode: 'insensitive' } },
+            { fatherName: { contains: query, mode: 'insensitive' } },
+            { mobile: { contains: query, mode: 'insensitive' } },
+            { cNumber: { contains: query, mode: 'insensitive' } },
+        ];
     }
 
     // Fetch applications
@@ -55,15 +64,11 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
         return acc;
     }, {} as Record<string, number>);
 
-    const totalPages = Math.ceil(totalCount / itemsPerPage);
+    // Calculate total count properly
+    const totalStatusCount = Object.values(statusCounts).reduce((a, b) => a + b, 0);
+    statusCounts['ALL'] = totalStatusCount;
 
-    const allFilters = [
-        { key: '', label: { hi: 'सभी', en: 'All' }, count: Object.values(statusCounts).reduce((a, b) => a + b, 0) },
-        { key: 'PENDING', label: { hi: 'लंबित', en: 'Pending' }, count: statusCounts.PENDING || 0 },
-        { key: 'IN_PROGRESS', label: { hi: 'प्रगति में', en: 'In Progress' }, count: statusCounts.IN_PROGRESS || 0 },
-        { key: 'RESOLVED', label: { hi: 'समाधान', en: 'Resolved' }, count: statusCounts.RESOLVED || 0 },
-        { key: 'REJECTED', label: { hi: 'अस्वीकृत', en: 'Rejected' }, count: statusCounts.REJECTED || 0 },
-    ];
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
 
     return (
         <div className="space-y-6">
@@ -93,34 +98,10 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
                 </div>
             </div>
 
-            {/* Status Filters */}
-            <Card className="border-0 shadow-sm">
-                <CardContent className="p-4">
-                    <div className="flex flex-wrap gap-2">
-                        {allFilters.map((filter) => (
-                            <Link
-                                key={filter.key}
-                                href={`/admin/applications${filter.key ? `?status=${filter.key}` : ''}`}
-                            >
-                                <button
-                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${status === filter.key || (!status && !filter.key)
-                                        ? 'bg-orange-600 text-white shadow-sm'
-                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                        }`}
-                                >
-                                    {isHindi ? filter.label.hi : filter.label.en}
-                                    <span className={`text-xs px-1.5 py-0.5 rounded-full ${status === filter.key || (!status && !filter.key)
-                                        ? 'bg-white/20 text-white'
-                                        : 'bg-gray-200 text-gray-500'
-                                        }`}>
-                                        {filter.count}
-                                    </span>
-                                </button>
-                            </Link>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
+            {/* Search and Filters */}
+            <div className="mb-6">
+                <ApplicationSearch locale={locale} statusCounts={statusCounts} />
+            </div>
 
             {/* Applications Grid/List */}
             <div className="space-y-3">

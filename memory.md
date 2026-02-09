@@ -84,6 +84,18 @@ DATABASE_URL=postgresql://postgres:postgres@localhost:5432/km_db
 - **Database Performance:** Optimized dashboard and application list queries using Prisma's `groupBy` for status counting, significantly reducing the number of database calls.
 - **Type Safety:** Enhanced validation schemas using Zod in `src/lib/validations/application.ts`.
 
+### ✅ Phase 10: UX Refinements & Search
+- **Hindi Transliteration:** Integrated `react-transliterate` into `ApplicationFormFields.tsx` for enhanced Hindi typing support on Name, Father's Name, and Address fields.
+- **Unified Search & Filter:** 
+  - Created `ApplicationSearch.tsx` client component.
+  - Implemented real-time search with **Hindi transliteration support**.
+  - Replaced pill filters with a consolidated **Status Dropdown** that displays application counts per status.
+  - Added debounce logic (750ms) to search input to optimize performance.
+- **Enhanced Validation Feedback:** 
+  - Restored robust `ZodError` handling in `application.ts` server actions.
+  - Integrated `sonner` toast notifications for immediate success/error feedback on form submission.
+- **Performance Fixes:** resolved infinite loop issues in search component by optimizing `useEffect` dependency tracking.
+
 ## Key Files Structure
 ```
 src/
