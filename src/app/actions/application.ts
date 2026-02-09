@@ -1,8 +1,9 @@
 'use server';
 
 import prisma from '@/lib/db';
-import { applicationSchema, ApplicationFormData } from '@/lib/validations/application';
+import { applicationSchema, ApplicationFormData, adminApplicationSchema, AdminApplicationData } from '@/lib/validations/application';
 import { revalidatePath } from 'next/cache';
+import { auth } from '@/lib/auth';
 
 // Generate unique CNumber: YYYYMMDD-RANDOM
 function generateCNumber(): string {
@@ -18,57 +19,81 @@ export type SubmitApplicationResult = {
     error?: string;
 };
 
+/**
+ * Shared internal function for creating applications
+ */
+async function createApplicationRecord(
+    data: ApplicationFormData & { submittedById?: string; documents?: AdminApplicationData['documents'] },
+    fileUrl?: string
+) {
+    const cNumber = generateCNumber();
+
+    // Create the application
+    const citizenApp = await prisma.citizenApp.create({
+        data: {
+            name: data.name,
+            fatherName: data.fatherName,
+            address: data.address,
+            mobile: data.mobile,
+            vidhansabhaId: data.vidhansabhaId,
+            workTypeId: data.workTypeId,
+            type: data.applicantType,
+            post: data.post,
+            description: data.description,
+            cNumber,
+            fileUrl: fileUrl || null,
+            submittedById: data.submittedById,
+            status: 'PENDING',
+        },
+    });
+
+    // Save documents if any
+    if (data.documents && data.documents.length > 0) {
+        await prisma.document.createMany({
+            data: data.documents.map((doc) => ({
+                citizenAppId: citizenApp.id,
+                filename: doc.filename,
+                originalName: doc.originalName,
+                mimeType: doc.mimeType,
+                size: doc.size,
+                url: doc.url,
+                type: doc.type,
+            })),
+        });
+    }
+
+    // Create activity log
+    const note = data.submittedById
+        ? `आवेदन व्यवस्थापक द्वारा जमा किया गया / Application submitted by admin`
+        : 'आवेदन प्राप्त हुआ / Application received';
+
+    await prisma.activityLog.create({
+        data: {
+            citizenAppId: citizenApp.id,
+            action: 'APPLICATION_SUBMITTED',
+            note: note,
+            performedBy: data.submittedById ? 'Admin' : undefined,
+        },
+    });
+
+    // Revalidate admin pages
+    revalidatePath('/admin/applications');
+    revalidatePath('/admin/dashboard');
+
+    return cNumber;
+}
+
 export async function submitApplication(
     data: ApplicationFormData,
     fileUrl?: string
 ): Promise<SubmitApplicationResult> {
     try {
-        // Validate the data
         const validatedData = applicationSchema.parse(data);
-
-        // Generate unique application number
-        const cNumber = generateCNumber();
-
-        // Create the application in database
-        const citizenApp = await prisma.citizenApp.create({
-            data: {
-                name: validatedData.name,
-                fatherName: validatedData.fatherName,
-                address: validatedData.address,
-                mobile: validatedData.mobile,
-                vidhansabhaId: validatedData.vidhansabhaId,
-                workTypeId: validatedData.workTypeId,
-                type: validatedData.applicantType,
-                post: validatedData.post,
-                description: validatedData.description,
-                cNumber,
-                fileUrl: fileUrl || null,
-                status: 'PENDING',
-            },
-        });
-
-        // Create activity log
-        await prisma.activityLog.create({
-            data: {
-                citizenAppId: citizenApp.id,
-                action: 'APPLICATION_SUBMITTED',
-                note: 'आवेदन प्राप्त हुआ / Application received',
-            },
-        });
-
-        // Revalidate admin pages
-        revalidatePath('/admin/applications');
-        revalidatePath('/admin/dashboard');
-
+        const cNumber = await createApplicationRecord(validatedData, fileUrl);
         return { success: true, cNumber };
     } catch (error) {
         console.error('Error submitting application:', error);
-
-        if (error instanceof Error) {
-            return { success: false, error: error.message };
-        }
-
-        return { success: false, error: 'आवेदन जमा करने में त्रुटि हुई' };
+        return { success: false, error: error instanceof Error ? error.message : 'आवेदन जमा करने में त्रुटि हुई' };
     }
 }
 
@@ -88,7 +113,7 @@ export async function getWorkTypes() {
 
 // Track application status
 export async function getApplicationStatus(cNumber: string) {
-    const application = await prisma.citizenApp.findUnique({
+    return prisma.citizenApp.findUnique({
         where: { cNumber },
         include: {
             vidhansabha: true,
@@ -98,100 +123,27 @@ export async function getApplicationStatus(cNumber: string) {
             },
         },
     });
-
-    if (!application) {
-        return null;
-    }
-
-    return application;
 }
 
 // Admin-only: Submit application on behalf of visitor
-import { auth } from '@/lib/auth';
-
-interface AdminApplicationData {
-    name: string;
-    fatherName: string;
-    mobile: string;
-    address: string;
-    vidhansabhaId: number;
-    type: string;
-    post?: string;
-    workTypeId: number;
-    description?: string;
-    documents: {
-        filename: string;
-        originalName: string;
-        mimeType: string;
-        size: number;
-        url: string;
-        type: 'PDF' | 'IMAGE';
-    }[];
-}
-
 export async function submitApplicationByAdmin(
     data: AdminApplicationData
 ): Promise<SubmitApplicationResult> {
     try {
-        // Check authentication
         const session = await auth();
         if (!session?.user?.id) {
             return { success: false, error: 'Unauthorized' };
         }
 
-        // Generate unique application number
-        const cNumber = generateCNumber();
-
-        // Create the application
-        const citizenApp = await prisma.citizenApp.create({
-            data: {
-                name: data.name,
-                fatherName: data.fatherName,
-                address: data.address,
-                mobile: data.mobile,
-                vidhansabhaId: data.vidhansabhaId,
-                workTypeId: data.workTypeId,
-                type: data.type as 'CITIZEN' | 'PUBLIC_REP',
-                post: data.post,
-                description: data.description,
-                cNumber,
-                submittedById: session.user.id,
-                status: 'PENDING',
-            },
+        const validatedData = adminApplicationSchema.parse(data);
+        const cNumber = await createApplicationRecord({
+            ...validatedData,
+            submittedById: session.user.id,
         });
-
-        // Save documents
-        if (data.documents.length > 0) {
-            await prisma.document.createMany({
-                data: data.documents.map((doc) => ({
-                    citizenAppId: citizenApp.id,
-                    filename: doc.filename,
-                    originalName: doc.originalName,
-                    mimeType: doc.mimeType,
-                    size: doc.size,
-                    url: doc.url,
-                    type: doc.type,
-                })),
-            });
-        }
-
-        // Create activity log
-        await prisma.activityLog.create({
-            data: {
-                citizenAppId: citizenApp.id,
-                action: 'APPLICATION_SUBMITTED',
-                note: `आवेदन ${session.user.name || 'Admin'} द्वारा जमा किया गया`,
-                performedBy: session.user.name || session.user.email || undefined,
-            },
-        });
-
-        // Revalidate admin pages
-        revalidatePath('/admin/applications');
-        revalidatePath('/admin/dashboard');
 
         return { success: true, cNumber };
     } catch (error) {
-        console.error('Error submitting application:', error);
+        console.error('Error submitting application (admin):', error);
         return { success: false, error: 'आवेदन जमा करने में त्रुटि हुई' };
     }
 }

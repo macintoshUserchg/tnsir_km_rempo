@@ -1,4 +1,43 @@
 @import "tailwindcss";
+
+/* Hindi Language Typography Optimization */
+.lang-hi {
+  font-family: var(--font-hindi), 'Noto Sans Devanagari', sans-serif;
+  line-height: 1.7;
+}
+
+.lang-hi h1,
+.lang-hi h2,
+.lang-hi h3,
+.lang-hi h4,
+.lang-hi h5,
+.lang-hi h6 {
+  line-height: 1.4;
+}
+
+.lang-hi p {
+  font-size: 1.05em;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #f97316;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #ea580c;
+}
+
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -120,6 +159,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -163,7 +203,7 @@
   }
 
   .section-padding {
-    @apply py-12 md:py-16 lg:py-20;
+    @apply py-6 md:py-8 lg:py-10;
   }
 
   .gradient-overlay {

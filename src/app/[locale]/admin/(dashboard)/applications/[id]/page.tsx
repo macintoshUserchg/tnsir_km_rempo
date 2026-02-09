@@ -7,6 +7,7 @@ import { ArrowLeft, FileText, Phone, MapPin, User, Calendar, Briefcase, Clock, I
 import prisma from '@/lib/db';
 import { Link } from '@/i18n/navigation';
 import StatusUpdateForm from '@/components/admin/StatusUpdateForm';
+import ApplicationStatusBadge from '@/components/admin/ApplicationStatusBadge';
 
 type Props = {
     params: Promise<{ locale: string; id: string }>;
@@ -35,15 +36,6 @@ export default async function ApplicationDetailPage({ params }: Props) {
         notFound();
     }
 
-    const statusConfig: Record<string, { label: { hi: string; en: string }; style: string; dotColor: string }> = {
-        PENDING: { label: { hi: 'लंबित', en: 'Pending' }, style: 'bg-amber-100 text-amber-700 ring-1 ring-amber-200', dotColor: 'bg-amber-500' },
-        IN_PROGRESS: { label: { hi: 'प्रगति में', en: 'In Progress' }, style: 'bg-purple-100 text-purple-700 ring-1 ring-purple-200', dotColor: 'bg-purple-500' },
-        RESOLVED: { label: { hi: 'समाधान', en: 'Resolved' }, style: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200', dotColor: 'bg-emerald-500' },
-        REJECTED: { label: { hi: 'अस्वीकृत', en: 'Rejected' }, style: 'bg-red-100 text-red-700 ring-1 ring-red-200', dotColor: 'bg-red-500' },
-    };
-
-    const currentStatus = statusConfig[application.status] || statusConfig.PENDING;
-
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -60,9 +52,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
                         <p className="text-gray-500 font-mono text-sm mt-1">#{application.cNumber}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <span className={`px-4 py-2 rounded-full text-sm font-semibold ${currentStatus.style}`}>
-                            {isHindi ? currentStatus.label.hi : currentStatus.label.en}
-                        </span>
+                        <ApplicationStatusBadge status={application.status} locale={locale} />
                     </div>
                 </div>
             </div>

@@ -11,27 +11,45 @@ export const Hero: React.FC = () => {
 
     return (
         <section
-            className="relative min-h-[90vh] flex items-center overflow-hidden"
+            className="relative min-h-[80vh] md:min-h-[90vh] flex items-center overflow-hidden py-8 md:py-0"
             style={{
                 background: 'linear-gradient(135deg, #f5d547 0%, #f4a91f 50%, #e88b1a 100%)',
             }}
         >
-            {/* Background Pattern */}
-
             <div className="container-custom relative z-10">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <div className="grid lg:grid-cols-2 gap-6 md:gap-12 items-center">
+                    {/* Mobile Image - Show at top on mobile */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6 }}
+                        className="lg:hidden order-first"
+                    >
+                        <div className="relative w-48 h-48 sm:w-56 sm:h-56 mx-auto">
+                            <div className="absolute inset-0 bg-white/20 rounded-full"></div>
+                            <div className="absolute inset-2 bg-white/30 rounded-full overflow-hidden">
+                                <img
+                                    src={heroImage}
+                                    alt="Dr. Kirodi Lal Meena"
+                                    className="w-full h-full object-cover"
+                                    loading="eager"
+                                />
+                            </div>
+                        </div>
+                    </motion.div>
+
                     {/* Left Content */}
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="text-white"
+                        className="text-white text-center lg:text-left"
                     >
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2, duration: 0.6 }}
-                            className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium mb-6"
+                            className="inline-block px-3 py-1.5 md:px-4 md:py-2 bg-white/20 backdrop-blur-sm rounded-full text-xs md:text-sm font-medium mb-4 md:mb-6"
                         >
                             Cabinet Minister, Government of Rajasthan
                         </motion.div>
@@ -40,7 +58,7 @@ export const Hero: React.FC = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.6 }}
-                            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+                            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 md:mb-6 leading-tight"
                         >
                             Dr. Kirodi Lal Meena
                         </motion.h1>
@@ -49,7 +67,7 @@ export const Hero: React.FC = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6, duration: 0.6 }}
-                            className="text-xl md:text-2xl mb-4 text-white/90 font-medium"
+                            className="text-lg md:text-xl lg:text-2xl mb-3 md:mb-4 text-white/90 font-medium"
                         >
                             BJP Leader and Public Servant
                         </motion.p>
@@ -58,7 +76,7 @@ export const Hero: React.FC = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.8, duration: 0.6 }}
-                            className="text-lg mb-8 text-white/80 max-w-xl"
+                            className="text-sm md:text-base lg:text-lg mb-6 md:mb-8 text-white/80 max-w-xl mx-auto lg:mx-0"
                         >
                             Serving Rajasthan through legislative leadership and public service,
                             with a focus on agriculture, rural development, and community well-being.
@@ -68,23 +86,23 @@ export const Hero: React.FC = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 1, duration: 0.6 }}
-                            className="flex flex-wrap gap-4"
+                            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
                         >
                             <Link href="/biography">
                                 <Button
                                     size="lg"
-                                    className="bg-white text-orange-600 hover:bg-gray-100"
-                                    icon={<ArrowRight className="w-5 h-5" />}
+                                    className="bg-white text-orange-600 hover:bg-gray-100 w-full sm:w-auto text-sm md:text-base"
+                                    icon={<ArrowRight className="w-4 h-4 md:w-5 md:h-5" />}
                                 >
                                     Learn More
                                 </Button>
                             </Link>
-                            <Link href="/media/video-gallery">
+                            <Link href="/video-gallery">
                                 <Button
                                     size="lg"
                                     variant="outline"
-                                    className="border-white text-white hover:bg-white hover:text-orange-600"
-                                    icon={<Play className="w-5 h-5" />}
+                                    className="border-white text-white hover:bg-white hover:text-orange-600 w-full sm:w-auto text-sm md:text-base"
+                                    icon={<Play className="w-4 h-4 md:w-5 md:h-5" />}
                                 >
                                     Watch Videos
                                 </Button>
@@ -92,7 +110,7 @@ export const Hero: React.FC = () => {
                         </motion.div>
                     </motion.div>
 
-                    {/* Right Image */}
+                    {/* Desktop Image */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -116,12 +134,12 @@ export const Hero: React.FC = () => {
                 </div>
             </div>
 
-            {/* Scroll Indicator */}
+            {/* Scroll Indicator - Hidden on mobile */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5, duration: 0.6 }}
-                className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+                className="absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 hidden md:block"
             >
                 <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center pt-2">
                     <motion.div

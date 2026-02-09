@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans_Devanagari } from "next/font/google";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -16,6 +16,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
     variable: "--font-geist-mono",
     subsets: ["latin"],
+});
+
+const notoSansDevanagari = Noto_Sans_Devanagari({
+    variable: "--font-hindi",
+    subsets: ["devanagari"],
+    weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -48,7 +54,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
     return (
         <html lang={locale} dir={locale === 'hi' ? 'ltr' : 'ltr'}>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+            <body className={`${geistSans.variable} ${geistMono.variable} ${notoSansDevanagari.variable} antialiased ${locale === 'hi' ? 'lang-hi' : ''}`}>
                 <NextIntlClientProvider messages={messages}>
                     <SplashScreen />
                     {children}

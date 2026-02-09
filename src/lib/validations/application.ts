@@ -53,6 +53,20 @@ export const applicationSchema = z.object({
 // Infer the type from the schema
 export type ApplicationFormData = z.infer<typeof applicationSchema>;
 
+// Admin submission schema (more structured for multi-document support)
+export const adminApplicationSchema = applicationSchema.extend({
+    documents: z.array(z.object({
+        filename: z.string(),
+        originalName: z.string(),
+        mimeType: z.string(),
+        size: z.number(),
+        url: z.string(),
+        type: z.enum(['PDF', 'IMAGE']),
+    })).default([]),
+});
+
+export type AdminApplicationData = z.infer<typeof adminApplicationSchema>;
+
 // Schema for file upload
 export const fileUploadSchema = z.object({
     file: z

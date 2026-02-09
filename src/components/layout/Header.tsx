@@ -12,12 +12,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Menu, Globe, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export default function Header() {
     const t = useTranslations('common');
     const locale = useLocale();
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
+    const isHindi = locale === 'hi';
 
     const navLinks = [
         { href: '/', label: t('home') },
@@ -44,7 +46,12 @@ export default function Header() {
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-orange-600">
+                    <span className={cn(
+                        "font-bold text-orange-600 transition-all",
+                        isHindi
+                            ? "text-2xl md:text-3xl tracking-normal"
+                            : "text-lg md:text-xl tracking-tight"
+                    )}>
                         {t('siteName')}
                     </span>
                 </Link>

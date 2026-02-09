@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { FileText, Clock, CheckCircle, XCircle, TrendingUp, ArrowRight, Calendar, MapPin, User, Eye } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import prisma from '@/lib/db';
+import ApplicationStatusBadge from '@/components/admin/ApplicationStatusBadge';
 
 type Props = {
     params: Promise<{ locale: string }>;
@@ -14,14 +15,23 @@ export default async function AdminDashboardPage({ params }: Props) {
     setRequestLocale(locale);
     const isHindi = locale === 'hi';
 
-    // Fetch statistics
-    const [totalApplications, pendingApplications, inProgressApplications, resolvedApplications, rejectedApplications] = await Promise.all([
-        prisma.citizenApp.count(),
-        prisma.citizenApp.count({ where: { status: 'PENDING' } }),
-        prisma.citizenApp.count({ where: { status: 'IN_PROGRESS' } }),
-        prisma.citizenApp.count({ where: { status: 'RESOLVED' } }),
-        prisma.citizenApp.count({ where: { status: 'REJECTED' } }),
-    ]);
+    // Fetch statistics using groupBy for better performance
+    const statusCounts = await prisma.citizenApp.groupBy({
+        by: ['status'],
+        _count: true,
+    });
+
+    // Map counts to a record for easier access
+    const counts = statusCounts.reduce((acc, curr) => {
+        acc[curr.status] = curr._count;
+        return acc;
+    }, {} as Record<string, number>);
+
+    const totalApplications = Object.values(counts).reduce((a, b) => a + b, 0);
+    const pendingApplications = counts['PENDING'] || 0;
+    const inProgressApplications = counts['IN_PROGRESS'] || 0;
+    const resolvedApplications = counts['RESOLVED'] || 0;
+    const rejectedApplications = counts['REJECTED'] || 0;
 
     // Fetch recent applications
     const recentApplications = await prisma.citizenApp.findMany({
@@ -74,31 +84,6 @@ export default async function AdminDashboardPage({ params }: Props) {
             textColor: 'text-emerald-600',
         },
     ];
-
-    const getStatusBadge = (status: string) => {
-        const styles = {
-            PENDING: 'bg-amber-100 text-amber-700 ring-1 ring-amber-200',
-            IN_PROGRESS: 'bg-purple-100 text-purple-700 ring-1 ring-purple-200',
-            RESOLVED: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200',
-            REJECTED: 'bg-red-100 text-red-700 ring-1 ring-red-200',
-        };
-        const labels = isHindi ? {
-            PENDING: 'लंबित',
-            IN_PROGRESS: 'प्रगति में',
-            RESOLVED: 'समाधान',
-            REJECTED: 'अस्वीकृत',
-        } : {
-            PENDING: 'Pending',
-            IN_PROGRESS: 'In Progress',
-            RESOLVED: 'Resolved',
-            REJECTED: 'Rejected',
-        };
-        return (
-            <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${styles[status as keyof typeof styles] || styles.PENDING}`}>
-                {labels[status as keyof typeof labels] || status}
-            </span>
-        );
-    };
 
     return (
         <div className="space-y-8">
@@ -242,7 +227,7 @@ export default async function AdminDashboardPage({ params }: Props) {
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <div className="text-right">
-                                            {getStatusBadge(app.status)}
+                                            <ApplicationStatusBadge status={app.status} locale={locale} />
                                             <p className="text-xs text-gray-400 mt-1.5">
                                                 {new Date(app.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-IN', {
                                                     day: 'numeric',

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Eye, Download, Search, Filter, FileText, User, Phone, MapPin, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import prisma from '@/lib/db';
+import ApplicationStatusBadge from '@/components/admin/ApplicationStatusBadge';
 
 type Props = {
     params: Promise<{ locale: string }>;
@@ -30,7 +31,7 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
     }
 
     // Fetch applications
-    const [applications, totalCount, vidhansabhas, statusCounts] = await Promise.all([
+    const [applications, totalCount, vidhansabhas, statusStats] = await Promise.all([
         prisma.citizenApp.findMany({
             where,
             orderBy: { createdAt: 'desc' },
@@ -43,26 +44,25 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
         }),
         prisma.citizenApp.count({ where }),
         prisma.vidhansabha.findMany(),
-        Promise.all([
-            prisma.citizenApp.count({ where: { status: 'PENDING' } }),
-            prisma.citizenApp.count({ where: { status: 'IN_PROGRESS' } }),
-            prisma.citizenApp.count({ where: { status: 'RESOLVED' } }),
-            prisma.citizenApp.count({ where: { status: 'REJECTED' } }),
-        ]),
+        prisma.citizenApp.groupBy({
+            by: ['status'],
+            _count: true,
+        }),
     ]);
+
+    const statusCounts = statusStats.reduce((acc, curr) => {
+        acc[curr.status] = curr._count;
+        return acc;
+    }, {} as Record<string, number>);
 
     const totalPages = Math.ceil(totalCount / itemsPerPage);
 
-    const statusConfig: Record<string, { label: { hi: string; en: string }; style: string; count: number }> = {
-        PENDING: { label: { hi: 'लंबित', en: 'Pending' }, style: 'bg-amber-100 text-amber-700 ring-1 ring-amber-200', count: statusCounts[0] },
-        IN_PROGRESS: { label: { hi: 'प्रगति में', en: 'In Progress' }, style: 'bg-purple-100 text-purple-700 ring-1 ring-purple-200', count: statusCounts[1] },
-        RESOLVED: { label: { hi: 'समाधान', en: 'Resolved' }, style: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200', count: statusCounts[2] },
-        REJECTED: { label: { hi: 'अस्वीकृत', en: 'Rejected' }, style: 'bg-red-100 text-red-700 ring-1 ring-red-200', count: statusCounts[3] },
-    };
-
     const allFilters = [
-        { key: '', label: { hi: 'सभी', en: 'All' }, count: statusCounts.reduce((a, b) => a + b, 0) },
-        ...Object.entries(statusConfig).map(([key, config]) => ({ key, label: config.label, count: config.count })),
+        { key: '', label: { hi: 'सभी', en: 'All' }, count: Object.values(statusCounts).reduce((a, b) => a + b, 0) },
+        { key: 'PENDING', label: { hi: 'लंबित', en: 'Pending' }, count: statusCounts.PENDING || 0 },
+        { key: 'IN_PROGRESS', label: { hi: 'प्रगति में', en: 'In Progress' }, count: statusCounts.IN_PROGRESS || 0 },
+        { key: 'RESOLVED', label: { hi: 'समाधान', en: 'Resolved' }, count: statusCounts.RESOLVED || 0 },
+        { key: 'REJECTED', label: { hi: 'अस्वीकृत', en: 'Rejected' }, count: statusCounts.REJECTED || 0 },
     ];
 
     return (
@@ -104,14 +104,14 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
                             >
                                 <button
                                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${status === filter.key || (!status && !filter.key)
-                                            ? 'bg-orange-600 text-white shadow-sm'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        ? 'bg-orange-600 text-white shadow-sm'
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                         }`}
                                 >
                                     {isHindi ? filter.label.hi : filter.label.en}
                                     <span className={`text-xs px-1.5 py-0.5 rounded-full ${status === filter.key || (!status && !filter.key)
-                                            ? 'bg-white/20 text-white'
-                                            : 'bg-gray-200 text-gray-500'
+                                        ? 'bg-white/20 text-white'
+                                        : 'bg-gray-200 text-gray-500'
                                         }`}>
                                         {filter.count}
                                     </span>
@@ -132,9 +132,9 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
                                     <div className="flex items-center">
                                         {/* Left Color Bar */}
                                         <div className={`w-1.5 self-stretch rounded-l-xl ${app.status === 'PENDING' ? 'bg-amber-500' :
-                                                app.status === 'IN_PROGRESS' ? 'bg-purple-500' :
-                                                    app.status === 'RESOLVED' ? 'bg-emerald-500' :
-                                                        'bg-red-500'
+                                            app.status === 'IN_PROGRESS' ? 'bg-purple-500' :
+                                                app.status === 'RESOLVED' ? 'bg-emerald-500' :
+                                                    'bg-red-500'
                                             }`} />
 
                                         <div className="flex-1 p-5 flex items-center justify-between gap-4">
@@ -174,9 +174,7 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
                                             {/* Right Side */}
                                             <div className="flex items-center gap-4 flex-shrink-0">
                                                 <div className="text-right">
-                                                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${statusConfig[app.status]?.style || 'bg-gray-100'}`}>
-                                                        {isHindi ? statusConfig[app.status]?.label.hi : statusConfig[app.status]?.label.en}
-                                                    </span>
+                                                    <ApplicationStatusBadge status={app.status} locale={locale} />
                                                     <p className="text-xs text-gray-400 mt-1.5">
                                                         {new Date(app.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-IN', {
                                                             day: 'numeric',
