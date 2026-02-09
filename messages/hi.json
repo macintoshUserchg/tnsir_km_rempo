@@ -1,0 +1,87 @@
+{
+    "common": {
+        "siteName": "डॉ. किरोड़ी लाल मीणा",
+        "home": "होम",
+        "biography": "जीवनी",
+        "pressRelease": "प्रेस विज्ञप्ति",
+        "blog": "ब्लॉग",
+        "contact": "संपर्क",
+        "apply": "आवेदन करें",
+        "login": "लॉगिन",
+        "logout": "लॉगआउट",
+        "submit": "जमा करें",
+        "cancel": "रद्द करें",
+        "save": "सहेजें",
+        "edit": "संपादित करें",
+        "delete": "हटाएं",
+        "search": "खोजें",
+        "loading": "लोड हो रहा है...",
+        "noResults": "कोई परिणाम नहीं मिला",
+        "readMore": "और पढ़ें"
+    },
+    "home": {
+        "heroTitle": "जनप्रतिनिधि की सेवा में",
+        "heroSubtitle": "विधानसभा क्षेत्र की जनता की सेवा के लिए समर्पित",
+        "welcomeMessage": "डॉ. किरोड़ी लाल मीणा की आधिकारिक वेबसाइट में आपका स्वागत है",
+        "quickLinks": "त्वरित लिंक",
+        "latestNews": "ताज़ा समाचार",
+        "recentActivities": "हाल की गतिविधियाँ"
+    },
+    "biography": {
+        "title": "जीवनी",
+        "earlyLife": "प्रारंभिक जीवन",
+        "politicalCareer": "राजनीतिक करियर",
+        "achievements": "उपलब्धियाँ",
+        "timeline": "समयरेखा"
+    },
+    "application": {
+        "title": "आवेदन पत्र",
+        "applicantType": "आवेदक का प्रकार",
+        "citizen": "नागरिक",
+        "publicRepresentative": "जनप्रतिनिधि",
+        "name": "नाम",
+        "fatherName": "पिता का नाम",
+        "address": "पता",
+        "mobile": "मोबाइल नंबर",
+        "vidhansabha": "विधानसभा क्षेत्र",
+        "selectVidhansabha": "विधानसभा चुनें",
+        "workType": "कार्य का प्रकार",
+        "selectWorkType": "कार्य का प्रकार चुनें",
+        "post": "पद",
+        "description": "विवरण",
+        "attachFile": "फाइल संलग्न करें",
+        "submitApplication": "आवेदन जमा करें",
+        "successMessage": "आपका आवेदन सफलतापूर्वक जमा हो गया है",
+        "applicationNumber": "आवेदन संख्या",
+        "trackStatus": "स्थिति ट्रैक करें"
+    },
+    "status": {
+        "pending": "लंबित",
+        "inProgress": "प्रगति में",
+        "resolved": "समाधान",
+        "rejected": "अस्वीकृत"
+    },
+    "admin": {
+        "dashboard": "डैशबोर्ड",
+        "applications": "आवेदन",
+        "totalApplications": "कुल आवेदन",
+        "pendingApplications": "लंबित आवेदन",
+        "resolvedApplications": "समाधान किए गए",
+        "pressReleases": "प्रेस विज्ञप्तियाँ",
+        "blogs": "ब्लॉग",
+        "users": "उपयोगकर्ता",
+        "reports": "रिपोर्ट",
+        "settings": "सेटिंग्स",
+        "export": "निर्यात",
+        "updateStatus": "स्थिति अपडेट करें",
+        "addNote": "नोट जोड़ें",
+        "viewDetails": "विवरण देखें"
+    },
+    "footer": {
+        "address": "पता",
+        "phone": "फोन",
+        "email": "ईमेल",
+        "followUs": "हमें फॉलो करें",
+        "copyright": "© 2024 डॉ. किरोड़ी लाल मीणा। सर्वाधिकार सुरक्षित।"
+    }
+}

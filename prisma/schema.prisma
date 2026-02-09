@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// === MASTER DATA ===
+model Vidhansabha {
+  id       Int          @id @default(autoincrement())
+  nameHi   String       @map("name_hi")
+  nameEn   String       @map("name_en")
+  citizens CitizenApp[]
+
+  @@map("vidhansabhas")
+}
+
+model WorkType {
+  id       Int          @id @default(autoincrement())
+  nameHi   String       @map("name_hi")
+  nameEn   String?      @map("name_en")
+  citizens CitizenApp[]
+
+  @@map("work_types")
+}
+
+// === AUTHENTICATION ===
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  password      String
+  name          String
+  role          Role         @default(STAFF)
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  submittedApps CitizenApp[]
+
+  @@map("users")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+}
+
+// === APPLICATION MANAGEMENT ===
+model CitizenApp {
+  id            Int           @id @default(autoincrement())
+  cNumber       String        @unique @map("c_number")
+  
+  // Applicant Info
+  name          String
+  fatherName    String        @map("father_name")
+  address       String
+  mobile        String
+  
+  // Location
+  vidhansabhaId Int           @map("vidhansabha_id")
+  vidhansabha   Vidhansabha   @relation(fields: [vidhansabhaId], references: [id])
+  
+  // Application Details
+  type          ApplicantType
+  post          String?       // Only for PUBLIC_REP
+  workTypeId    Int           @map("work_type_id")
+  workType      WorkType      @relation(fields: [workTypeId], references: [id])
+  description   String?       @db.Text
+  fileUrl       String?       @map("file_url")
+  
+  // Status
+  status        AppStatus     @default(PENDING)
+  
+  // Admin who submitted (for admin-only workflow)
+  submittedById String?       @map("submitted_by_id")
+  submittedBy   User?         @relation(fields: [submittedById], references: [id])
+  
+  // Timestamps
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  
+  // Relations
+  activityLogs  ActivityLog[]
+  documents     Document[]
+
+  @@map("citizen_apps")
+}
+
+model Document {
+  id           Int        @id @default(autoincrement())
+  citizenAppId Int        @map("citizen_app_id")
+  citizenApp   CitizenApp @relation(fields: [citizenAppId], references: [id], onDelete: Cascade)
+  filename     String     // stored filename
+  originalName String     @map("original_name")
+  mimeType     String     @map("mime_type")
+  size         Int        // bytes
+  url          String     // public URL
+  type         DocType    // PDF or IMAGE
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  @@map("documents")
+}
+
+enum DocType {
+  PDF
+  IMAGE
+}
+
+enum ApplicantType {
+  CITIZEN
+  PUBLIC_REP
+}
+
+enum AppStatus {
+  PENDING
+  IN_PROGRESS
+  RESOLVED
+  REJECTED
+}
+
+model ActivityLog {
+  id           Int        @id @default(autoincrement())
+  citizenAppId Int        @map("citizen_app_id")
+  citizenApp   CitizenApp @relation(fields: [citizenAppId], references: [id], onDelete: Cascade)
+  action       String
+  note         String?    @db.Text
+  performedBy  String?    @map("performed_by")
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  @@map("activity_logs")
+}
+
+// === CMS ===
+model PressRelease {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  titleHi   String   @map("title_hi")
+  titleEn   String?  @map("title_en")
+  contentHi String   @map("content_hi") @db.Text
+  contentEn String?  @map("content_en") @db.Text
+  pdfUrl    String?  @map("pdf_url")
+  date        DateTime        @default(now())
+  published   Boolean         @default(false)
+  publishedAt DateTime?       @map("published_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("press_releases")
+}
+
+model BlogPost {
+  id          Int       @id @default(autoincrement())
+  slug        String    @unique
+  titleHi     String    @map("title_hi")
+  titleEn     String?   @map("title_en")
+  contentHi   String    @map("content_hi") @db.Text
+  contentEn   String?   @map("content_en") @db.Text
+  imageUrl    String?   @map("image_url")
+  author      String    @default("Admin")
+  published   Boolean   @default(false)
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("blog_posts")
+}
+
+model TimelineEvent {
+  id       Int     @id @default(autoincrement())
+  year     Int
+  titleHi  String  @map("title_hi")
+  titleEn  String? @map("title_en")
+  descHi   String  @map("desc_hi") @db.Text
+  descEn   String? @map("desc_en") @db.Text
+  imageUrl String? @map("image_url")
+
+  @@map("timeline_events")
+}

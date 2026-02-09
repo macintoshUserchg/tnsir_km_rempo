@@ -1,0 +1,87 @@
+{
+    "common": {
+        "siteName": "Dr. Kirodi Lal Meena",
+        "home": "Home",
+        "biography": "Biography",
+        "pressRelease": "Press Release",
+        "blog": "Blog",
+        "contact": "Contact",
+        "apply": "Apply",
+        "login": "Login",
+        "logout": "Logout",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "save": "Save",
+        "edit": "Edit",
+        "delete": "Delete",
+        "search": "Search",
+        "loading": "Loading...",
+        "noResults": "No results found",
+        "readMore": "Read More"
+    },
+    "home": {
+        "heroTitle": "In Service of the People",
+        "heroSubtitle": "Dedicated to serving the citizens of the constituency",
+        "welcomeMessage": "Welcome to the official website of Dr. Kirodi Lal Meena",
+        "quickLinks": "Quick Links",
+        "latestNews": "Latest News",
+        "recentActivities": "Recent Activities"
+    },
+    "biography": {
+        "title": "Biography",
+        "earlyLife": "Early Life",
+        "politicalCareer": "Political Career",
+        "achievements": "Achievements",
+        "timeline": "Timeline"
+    },
+    "application": {
+        "title": "Application Form",
+        "applicantType": "Applicant Type",
+        "citizen": "Citizen",
+        "publicRepresentative": "Public Representative",
+        "name": "Name",
+        "fatherName": "Father's Name",
+        "address": "Address",
+        "mobile": "Mobile Number",
+        "vidhansabha": "Vidhansabha",
+        "selectVidhansabha": "Select Vidhansabha",
+        "workType": "Work Type",
+        "selectWorkType": "Select Work Type",
+        "post": "Post/Designation",
+        "description": "Description",
+        "attachFile": "Attach File",
+        "submitApplication": "Submit Application",
+        "successMessage": "Your application has been submitted successfully",
+        "applicationNumber": "Application Number",
+        "trackStatus": "Track Status"
+    },
+    "status": {
+        "pending": "Pending",
+        "inProgress": "In Progress",
+        "resolved": "Resolved",
+        "rejected": "Rejected"
+    },
+    "admin": {
+        "dashboard": "Dashboard",
+        "applications": "Applications",
+        "totalApplications": "Total Applications",
+        "pendingApplications": "Pending Applications",
+        "resolvedApplications": "Resolved Applications",
+        "pressReleases": "Press Releases",
+        "blogs": "Blogs",
+        "users": "Users",
+        "reports": "Reports",
+        "settings": "Settings",
+        "export": "Export",
+        "updateStatus": "Update Status",
+        "addNote": "Add Note",
+        "viewDetails": "View Details"
+    },
+    "footer": {
+        "address": "Address",
+        "phone": "Phone",
+        "email": "Email",
+        "followUs": "Follow Us",
+        "copyright": "© 2024 Dr. Kirodi Lal Meena. All rights reserved."
+    }
+}
