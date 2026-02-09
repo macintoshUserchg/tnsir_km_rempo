@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useDebounce } from 'use-debounce';
+import { useDebounce } from '@/hooks/use-debounce';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
@@ -23,7 +23,7 @@ const ApplicationSearchContent = ({ locale, statusCounts }: ApplicationSearchPro
 
     const [searchQuery, setSearchQuery] = useState(searchParams.get('query') || '');
     const [status, setStatus] = useState(searchParams.get('status') || 'ALL');
-    const [debouncedQuery] = useDebounce(searchQuery, 750);
+    const debouncedQuery = useDebounce(searchQuery, 750);
     const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => {
