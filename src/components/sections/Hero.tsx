@@ -1,12 +1,14 @@
 'use client';
 
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { ArrowRight, Play } from 'lucide-react';
 import { Button } from '@/components/common/Button';
 import { motion } from 'framer-motion';
 
 export const Hero: React.FC = () => {
+    const t = useTranslations('home');
     const heroImage = '/images/gallery/kirodi-home-page.jpg';
 
     return (
@@ -30,7 +32,7 @@ export const Hero: React.FC = () => {
                             <div className="absolute inset-2 bg-white/30 rounded-full overflow-hidden">
                                 <img
                                     src={heroImage}
-                                    alt="Dr. Kirodi Lal Meena"
+                                    alt={t('name')}
                                     className="w-full h-full object-cover"
                                     loading="eager"
                                 />
@@ -51,7 +53,7 @@ export const Hero: React.FC = () => {
                             transition={{ delay: 0.2, duration: 0.6 }}
                             className="inline-block px-3 py-1.5 md:px-4 md:py-2 bg-white/20 backdrop-blur-sm rounded-full text-xs md:text-sm font-medium mb-4 md:mb-6"
                         >
-                            Cabinet Minister, Government of Rajasthan
+                            {t('designation')}
                         </motion.div>
 
                         <motion.h1
@@ -60,7 +62,7 @@ export const Hero: React.FC = () => {
                             transition={{ delay: 0.4, duration: 0.6 }}
                             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 md:mb-6 leading-tight"
                         >
-                            Dr. Kirodi Lal Meena
+                            {t('name')}
                         </motion.h1>
 
                         <motion.p
@@ -69,7 +71,7 @@ export const Hero: React.FC = () => {
                             transition={{ delay: 0.6, duration: 0.6 }}
                             className="text-lg md:text-xl lg:text-2xl mb-3 md:mb-4 text-white/90 font-medium"
                         >
-                            BJP Leader and Public Servant
+                            {t('role')}
                         </motion.p>
 
                         <motion.p
@@ -78,8 +80,7 @@ export const Hero: React.FC = () => {
                             transition={{ delay: 0.8, duration: 0.6 }}
                             className="text-sm md:text-base lg:text-lg mb-6 md:mb-8 text-white/80 max-w-xl mx-auto lg:mx-0"
                         >
-                            Serving Rajasthan through legislative leadership and public service,
-                            with a focus on agriculture, rural development, and community well-being.
+                            {t('description')}
                         </motion.p>
 
                         <motion.div
@@ -94,7 +95,7 @@ export const Hero: React.FC = () => {
                                     className="bg-white text-orange-600 hover:bg-gray-100 w-full sm:w-auto text-sm md:text-base"
                                     icon={<ArrowRight className="w-4 h-4 md:w-5 md:h-5" />}
                                 >
-                                    Learn More
+                                    {t('buttons.learnMore')}
                                 </Button>
                             </Link>
                             <Link href="/video-gallery">
@@ -104,7 +105,7 @@ export const Hero: React.FC = () => {
                                     className="border-white text-white hover:bg-white hover:text-orange-600 w-full sm:w-auto text-sm md:text-base"
                                     icon={<Play className="w-4 h-4 md:w-5 md:h-5" />}
                                 >
-                                    Watch Videos
+                                    {t('buttons.watchVideos')}
                                 </Button>
                             </Link>
                         </motion.div>
@@ -123,7 +124,7 @@ export const Hero: React.FC = () => {
                             <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-sm rounded-3xl overflow-hidden">
                                 <img
                                     src={heroImage}
-                                    alt="Dr. Kirodi Lal Meena"
+                                    alt={t('name')}
                                     className="w-full h-full object-cover"
                                     loading="lazy"
                                 />

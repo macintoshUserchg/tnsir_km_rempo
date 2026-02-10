@@ -36,7 +36,15 @@
         "welcomeMessage": "Welcome to the official website of Dr. Kirodi Lal Meena",
         "quickLinks": "Quick Links",
         "latestNews": "Latest News",
-        "recentActivities": "Recent Activities"
+        "recentActivities": "Recent Activities",
+        "designation": "Cabinet Minister, Government of Rajasthan",
+        "name": "Dr. Kirodi Lal Meena",
+        "role": "BJP Leader and Public Servant",
+        "description": "Serving Rajasthan through legislative leadership and public service, with a focus on agriculture, rural development, and community well-being.",
+        "buttons": {
+            "learnMore": "Learn More",
+            "watchVideos": "Watch Videos"
+        }
     },
     "biography": {
         "title": "Biography",
