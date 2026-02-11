@@ -164,7 +164,7 @@ export function AdminMobileSidebar(props: SidebarProps) {
                     <span className="sr-only">Toggle Menu</span>
                 </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0 w-[280px] sm:w-[320px]">
+            <SheetContent side="left" className="p-0 w-[230px] sm:w-[260px]">
                 <div className="sr-only">
                     <SheetTitle>Navigation Menu</SheetTitle>
                     <SheetDescription>Main navigation for admin panel</SheetDescription>
