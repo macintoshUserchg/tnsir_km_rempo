@@ -47,7 +47,7 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
     const uploadToCloudinary = async (file: File, type: 'pdf' | 'image'): Promise<UploadedFile | null> => {
         // 1. Get Signature
         const timestamp = Math.round(new Date().getTime() / 1000);
-        const folder = type === 'pdf' ? 'documents' : 'images';
+        const folder = `tnsir_km/${type === 'pdf' ? 'documents' : 'images'}`;
         const upload_preset = 'km_app';
 
         const signRes = await fetch('/api/sign-cloudinary', {
@@ -74,7 +74,7 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
         formData.append('folder', folder);
         formData.append('upload_preset', upload_preset);
 
-        const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${type === 'pdf' ? 'auto' : 'image'}/upload`, {
+        const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
             method: 'POST',
             body: formData
         });
