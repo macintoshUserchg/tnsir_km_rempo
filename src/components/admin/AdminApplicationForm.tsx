@@ -44,30 +44,63 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
         setError('');
     };
 
-    const uploadFile = async (file: File, type: 'pdf' | 'image'): Promise<UploadedFile | null> => {
-        const payload = new FormData();
-        payload.append('file', file);
-        payload.append('type', type);
+    const uploadToCloudinary = async (file: File, type: 'pdf' | 'image'): Promise<UploadedFile | null> => {
+        // 1. Get Signature
+        const timestamp = Math.round(new Date().getTime() / 1000);
+        const folder = type === 'pdf' ? 'documents' : 'images';
+        const upload_preset = 'km_app';
 
-        const res = await fetch('/api/upload', {
+        const signRes = await fetch('/api/sign-cloudinary', {
             method: 'POST',
-            body: payload,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                paramsToSign: {
+                    timestamp,
+                    folder,
+                    upload_preset,
+                }
+            })
         });
 
-        if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || 'Upload failed');
+        if (!signRes.ok) throw new Error('Failed to get upload signature');
+        const { signature, cloudName, apiKey } = await signRes.json();
+
+        // 2. Upload to Cloudinary
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('api_key', apiKey);
+        formData.append('timestamp', timestamp.toString());
+        formData.append('signature', signature);
+        formData.append('folder', folder);
+        formData.append('upload_preset', upload_preset);
+
+        const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${type === 'pdf' ? 'auto' : 'image'}/upload`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!uploadRes.ok) {
+            const err = await uploadRes.json();
+            throw new Error(err.error?.message || 'Cloudinary upload failed');
         }
 
-        const data = await res.json();
-        return data.file;
+        const data = await uploadRes.json();
+
+        return {
+            filename: data.public_id,
+            originalName: file.name,
+            mimeType: type === 'pdf' ? 'application/pdf' : `image/${data.format}`,
+            size: data.bytes,
+            url: data.secure_url,
+            type: type === 'pdf' ? 'PDF' : 'IMAGE'
+        };
     };
 
     const handlePdfUpload = async (file: File) => {
         setUploading(true);
         setError('');
         try {
-            const uploaded = await uploadFile(file, 'pdf');
+            const uploaded = await uploadToCloudinary(file, 'pdf');
             if (uploaded) setPdfFile(uploaded);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'PDF upload failed');
@@ -80,7 +113,7 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
         setUploading(true);
         setError('');
         try {
-            const uploaded = await uploadFile(file, 'image');
+            const uploaded = await uploadToCloudinary(file, 'image');
             if (uploaded) setImages(prev => [...prev, uploaded]);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Image upload failed');
