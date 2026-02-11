@@ -8,8 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Search, Loader2 } from 'lucide-react';
-import { ReactTransliterate } from 'react-transliterate';
-import 'react-transliterate/dist/index.css';
+import { NewReactTransliterate } from 'new-react-transliterate';
+import 'new-react-transliterate/styles.css';
 
 interface ApplicationSearchProps {
     locale: string;
@@ -76,7 +76,7 @@ const ApplicationSearchContent = ({ locale, statusCounts }: ApplicationSearchPro
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
                     {isHindi ? (
-                        <ReactTransliterate
+                        <NewReactTransliterate
                             renderComponent={(props) => (
                                 <Input
                                     {...props}

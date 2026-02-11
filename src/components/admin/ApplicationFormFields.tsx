@@ -7,8 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User, Briefcase, FileText } from 'lucide-react';
-import { ReactTransliterate } from 'react-transliterate';
-import 'react-transliterate/dist/index.css';
+import { NewReactTransliterate } from 'new-react-transliterate';
+import 'new-react-transliterate/styles.css';
 
 interface ApplicationFormFieldsProps {
     locale: string;
@@ -49,7 +49,7 @@ export const ApplicationFormFields: React.FC<ApplicationFormFieldsProps> = ({
                                 {isHindi ? 'नाम' : 'Name'} <span className="text-red-500">*</span>
                             </Label>
                             {isHindi ? (
-                                <ReactTransliterate
+                                <NewReactTransliterate
                                     renderComponent={(props) => <Input {...props} className="h-11" />}
                                     value={formData.name}
                                     onChangeText={(text) => onChange('name', text)}
@@ -72,7 +72,7 @@ export const ApplicationFormFields: React.FC<ApplicationFormFieldsProps> = ({
                                 {isHindi ? 'पिता का नाम' : "Father's Name"} <span className="text-red-500">*</span>
                             </Label>
                             {isHindi ? (
-                                <ReactTransliterate
+                                <NewReactTransliterate
                                     renderComponent={(props) => <Input {...props} className="h-11" />}
                                     value={formData.fatherName}
                                     onChangeText={(text) => onChange('fatherName', text)}
@@ -131,7 +131,7 @@ export const ApplicationFormFields: React.FC<ApplicationFormFieldsProps> = ({
                             {isHindi ? 'पता' : 'Address'} <span className="text-red-500">*</span>
                         </Label>
                         {isHindi ? (
-                            <ReactTransliterate
+                            <NewReactTransliterate
                                 renderComponent={(props) => <Textarea {...props} className="resize-none" rows={3} />}
                                 value={formData.address}
                                 onChangeText={(text) => onChange('address', text)}
@@ -212,7 +212,7 @@ export const ApplicationFormFields: React.FC<ApplicationFormFieldsProps> = ({
                                 {isHindi ? 'पद / पदनाम' : 'Post / Designation'} <span className="text-red-500">*</span>
                             </Label>
                             {isHindi ? (
-                                <ReactTransliterate
+                                <NewReactTransliterate
                                     renderComponent={(props) => <Input {...props} className="h-11" />}
                                     value={formData.post}
                                     onChangeText={(text) => onChange('post', text)}
@@ -271,7 +271,7 @@ export const ApplicationFormFields: React.FC<ApplicationFormFieldsProps> = ({
                             {isHindi ? 'विस्तृत विवरण' : 'Detailed Description'}
                         </Label>
                         {isHindi ? (
-                            <ReactTransliterate
+                            <NewReactTransliterate
                                 renderComponent={(props) => <Textarea {...props} className="resize-none" rows={5} />}
                                 value={formData.description}
                                 onChangeText={(text) => onChange('description', text)}
