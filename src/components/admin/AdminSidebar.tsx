@@ -127,7 +127,10 @@ const SidebarContent = ({ locale, user, onNavigate }: SidebarProps) => {
                     <span>{isHindi ? 'सेटिंग्स' : 'Settings'}</span>
                 </Link>
 
-                <LanguageToggle className="w-full justify-start px-3 py-2.5 h-auto text-gray-600 hover:bg-gray-100/80 hover:text-gray-900" />
+                <LanguageToggle
+                    className="w-full justify-start px-3 py-2.5 h-auto text-gray-600 hover:bg-gray-100/80 hover:text-gray-900"
+                    onClick={onNavigate}
+                />
 
                 <Button
                     variant="ghost"
@@ -156,8 +159,9 @@ export function AdminMobileSidebar(props: SidebarProps) {
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden -ml-2 text-gray-600 hover:text-orange-600">
+                <Button variant="ghost" size="icon" className="text-gray-600 hover:text-orange-600 hover:bg-orange-50">
                     <Menu className="h-6 w-6" />
+                    <span className="sr-only">Toggle Menu</span>
                 </Button>
             </SheetTrigger>
             <SheetContent side="left" className="p-0 w-[280px] sm:w-[320px]">
