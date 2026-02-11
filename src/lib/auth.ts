@@ -6,7 +6,10 @@ import { Pool } from "pg";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL!,
+    ssl: { rejectUnauthorized: false },
+});
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
