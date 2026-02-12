@@ -19,7 +19,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import SectionManager from './SectionManager';
+import { TEMPLATES } from '@/config/templates';
+import { Layout, CheckCircle2 } from 'lucide-react';
 
 interface PageEditorClientProps {
     locale: string;
@@ -38,6 +41,7 @@ export default function PageEditorClient({ locale, page, isNew = false }: PageEd
         seoDesc: page?.seoDesc || '',
         isPublished: page?.isPublished || false,
         typography: (page?.typography as any) || {},
+        template: (page as any)?.template || 'blank',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -165,6 +169,43 @@ export default function PageEditorClient({ locale, page, isNew = false }: PageEd
                                     />
                                 </div>
                             </div>
+
+                            {isNew && (
+                                <div className="space-y-4 pt-4 border-t border-border/40">
+                                    <Label className="dashboard-section text-sm uppercase tracking-wider opacity-60">Select Page Template</Label>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+                                        {TEMPLATES.map((t) => (
+                                            <div
+                                                key={t.id}
+                                                className={cn(
+                                                    "relative cursor-pointer rounded-xl border-2 p-4 transition-all hover:shadow-md",
+                                                    formData.template === t.id
+                                                        ? "border-orange-600 bg-orange-50/30 dark:bg-orange-950/20"
+                                                        : "border-border/40 bg-card hover:border-orange-200"
+                                                )}
+                                                onClick={() => setFormData(prev => ({ ...prev, template: t.id }))}
+                                            >
+                                                {formData.template === t.id && (
+                                                    <div className="absolute top-2 right-2 text-orange-600">
+                                                        <CheckCircle2 className="h-5 w-5" />
+                                                    </div>
+                                                )}
+                                                <div className={cn(
+                                                    "w-10 h-10 rounded-lg flex items-center justify-center mb-3",
+                                                    formData.template === t.id ? "bg-orange-600 text-white" : "bg-muted text-muted-foreground"
+                                                )}>
+                                                    <Layout className="h-5 w-5" />
+                                                </div>
+                                                <h4 className="font-bold text-sm mb-1">{t.name}</h4>
+                                                <p className="text-xs text-muted-foreground leading-relaxed">{t.description}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <p className="text-xs text-muted-foreground italic">
+                                        Note: Selected section layout will be automatically created once you save the page.
+                                    </p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -293,11 +334,11 @@ export default function PageEditorClient({ locale, page, isNew = false }: PageEd
                             <CardDescription className="dashboard-label">Build and organize page content sections.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            {page && <SectionManager pageId={page.id} sections={page.sections} />}
+                            {page && <SectionManager pageId={page.id} sections={page.sections} locale={locale} />}
                         </CardContent>
                     </Card>
                 </TabsContent>
             </Tabs>
-        </form>
+        </form >
     );
 }

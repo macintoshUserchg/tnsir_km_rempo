@@ -9,12 +9,14 @@ async function getSettings() {
             OR: [
                 { group: 'CONTACT' },
                 { group: 'SOCIAL' },
-                { group: 'GENERAL' }
+                { group: 'GENERAL' },
+                { key: 'enablePublicTracking' }
             ]
-        }
+        },
+        select: { key: true, value: true }
     });
 
-    return settings.reduce((acc, curr) => {
+    return settings.reduce((acc: Record<string, string>, curr: { key: string; value: string }) => {
         acc[curr.key] = curr.value;
         return acc;
     }, {} as Record<string, string>);
@@ -65,6 +67,11 @@ export default async function Footer() {
                             <Link href="/contact" className="flex items-center gap-1 hover:text-orange-400 transition-colors text-xs md:text-sm">
                                 <span className="text-orange-400">›</span> {t('contact')}
                             </Link>
+                            {settings['enablePublicTracking'] === 'true' && (
+                                <Link href="/track" className="flex items-center gap-1 hover:text-orange-400 transition-colors text-xs md:text-sm">
+                                    <span className="text-orange-400">›</span> {t('trackStatus')}
+                                </Link>
+                            )}
                         </div>
                     </div>
 

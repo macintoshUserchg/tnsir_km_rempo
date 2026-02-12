@@ -3,10 +3,11 @@ import { prisma } from '@/lib/db';
 import PageEditorClient from './PageEditorClient';
 
 export default async function PageEditor({
-    params: { id, locale }
+    params
 }: {
-    params: { id: string; locale: string }
+    params: Promise<{ id: string; locale: string }>
 }) {
+    const { id, locale } = await params;
     if (id === 'new') {
         return <PageEditorClient locale={locale} isNew={true} />;
     }

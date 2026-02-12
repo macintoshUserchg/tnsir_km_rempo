@@ -3,6 +3,7 @@ import { PrismaClient, Role } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import * as bcrypt from 'bcryptjs';
+import { timelineData } from '../src/data/timeline';
 
 const connectionString = process.env.DATABASE_URL!;
 const pool = new Pool({
@@ -25,7 +26,8 @@ const SettingGroup = {
     HERO: 'HERO',
     CONTACT: 'CONTACT',
     SOCIAL: 'SOCIAL',
-    SEO: 'SEO'
+    SEO: 'SEO',
+    FEATURES: 'FEATURES'
 } as const;
 
 const SectionType = {
@@ -92,6 +94,9 @@ async function main() {
         { key: 'typo_footer_body_size', value: '14', type: SettingType.TEXT, group: SettingGroup.GENERAL },
         { key: 'typo_hero_title_size', value: '48', type: SettingType.TEXT, group: SettingGroup.GENERAL },
         { key: 'typo_hero_desc_size', value: '18', type: SettingType.TEXT, group: SettingGroup.GENERAL },
+
+        // Feature Settings
+        { key: 'enablePublicTracking', value: 'false', type: SettingType.BOOLEAN, group: SettingGroup.FEATURES },
     ];
 
     for (const s of settings) {
@@ -102,6 +107,33 @@ async function main() {
         });
     }
     console.log(`✅ Seeded ${settings.length} Site Settings`);
+
+    console.log(`✅ Seeded ${settings.length} Site Settings`);
+
+    // Seed Timeline Events
+    for (const event of timelineData) {
+        // @ts-ignore
+        await prisma.timelineEvent.upsert({
+            where: { id: parseInt(event.id) },
+            update: {
+                year: parseInt(event.year),
+                titleHi: event.titleHi || '',
+                titleEn: event.title, // Map title to titleEn
+                descHi: event.descriptionHi || '',
+                descEn: event.description, // Map description to descEn
+                imageUrl: null, // timelineData doesn't have imageUrl
+            },
+            create: {
+                year: parseInt(event.year),
+                titleHi: event.titleHi || '',
+                titleEn: event.title,
+                descHi: event.descriptionHi || '',
+                descEn: event.description,
+                imageUrl: null,
+            },
+        });
+    }
+    console.log(`✅ Seeded ${timelineData.length} Timeline Events`);
 
     // Seed Pages
     const pages = [

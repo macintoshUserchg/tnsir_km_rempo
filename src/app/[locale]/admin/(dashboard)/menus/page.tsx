@@ -2,10 +2,11 @@ import { prisma } from '@/lib/db';
 import MenuManager from './MenuManager';
 
 export default async function MenusPage({
-    params: { locale }
+    params
 }: {
-    params: { locale: string }
+    params: Promise<{ locale: string }>
 }) {
+    const { locale } = await params;
     // Fetch all menu items, ordered by position and order
     const menuItems = await prisma.menu.findMany({
         orderBy: [

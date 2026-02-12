@@ -16,10 +16,11 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 export default async function PageList({
-    params: { locale }
+    params
 }: {
-    params: { locale: string }
+    params: Promise<{ locale: string }>
 }) {
+    const { locale } = await params;
     const pages = await prisma.page.findMany({
         orderBy: { updatedAt: 'desc' }
     });

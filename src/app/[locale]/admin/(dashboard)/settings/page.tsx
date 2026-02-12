@@ -2,10 +2,11 @@ import { setRequestLocale } from 'next-intl/server';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Settings, User, Shield, Bell, Database, Key, LogOut, RefreshCw, Mail } from 'lucide-react';
+import { Settings, User, Shield, Bell, Database, Key, LogOut, RefreshCw, Mail, ToggleRight } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import prisma from '@/lib/db';
 import SettingsForm from '@/components/admin/SettingsForm';
+import FeatureToggle from '@/components/admin/FeatureToggle';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 type Props = {
@@ -29,7 +30,9 @@ export default async function SettingsPage({ params }: Props) {
     ]);
 
     // Fetch site settings
-    const settings = await prisma.siteSetting.findMany();
+    const settings = await prisma.siteSetting.findMany({
+        select: { key: true, value: true }
+    });
     const formattedSettings = settings.reduce((acc, setting) => {
         acc[setting.key] = setting.value;
         return acc;
@@ -47,9 +50,10 @@ export default async function SettingsPage({ params }: Props) {
             </div>
 
             <Tabs defaultValue="account" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
+                <TabsList className="grid w-full grid-cols-3 lg:w-[600px]">
                     <TabsTrigger value="account">{isHindi ? 'खाता और सिस्टम' : 'Account & System'}</TabsTrigger>
                     <TabsTrigger value="site">{isHindi ? 'वेबसाइट कॉन्फ़िगरेशन' : 'Site Configuration'}</TabsTrigger>
+                    <TabsTrigger value="features">{isHindi ? 'सुविधाएं' : 'Features'}</TabsTrigger>
                 </TabsList>
 
                 {/* ACCOUNT & SYSTEM TAB */}
@@ -198,6 +202,38 @@ export default async function SettingsPage({ params }: Props) {
                 {/* SITE CONFIGURATION TAB */}
                 <TabsContent value="site">
                     <SettingsForm locale={locale} initialSettings={formattedSettings} />
+                </TabsContent>
+
+                {/* FEATURES TAB */}
+                <TabsContent value="features" className="space-y-6">
+                    <Card className="dashboard-card border-0">
+                        <CardHeader className="border-b border-border bg-muted/30 pb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center shadow-sm">
+                                    <ToggleRight className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                                </div>
+                                <div>
+                                    <CardTitle className="dashboard-section">
+                                        {isHindi ? 'सुविधा सेटिंग्स' : 'Feature Settings'}
+                                    </CardTitle>
+                                    <CardDescription className="dashboard-label">
+                                        {isHindi ? 'सार्वजनिक सुविधाएं नियंत्रित करें' : 'Control public-facing features'}
+                                    </CardDescription>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-6 space-y-4">
+                            <FeatureToggle
+                                featureKey="enablePublicTracking"
+                                label="Public Application Tracking"
+                                labelHi="सार्वजनिक आवेदन ट्रैकिंग"
+                                description="Allow citizens to track their application status online"
+                                descriptionHi="नागरिकों को अपनी आवेदन स्थिति ऑनलाइन ट्रैक करने की अनुमति दें"
+                                initialValue={formattedSettings['enablePublicTracking'] === 'true'}
+                                locale={locale}
+                            />
+                        </CardContent>
+                    </Card>
                 </TabsContent>
             </Tabs>
         </div>

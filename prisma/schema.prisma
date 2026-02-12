@@ -193,6 +193,7 @@ model Page {
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
   typography  Json?         @map("typography")
+  template    String?       @map("template")
 
   sections    PageSection[]
 
@@ -223,6 +224,9 @@ enum SectionType {
   FEATURES
   TESTIMONIALS
   FAQ
+  BIOGRAPHY
+  STATS
+  NEWSLETTER
 }
 
 // === CMS: GLOBAL SETTINGS ===
@@ -252,6 +256,7 @@ enum SettingGroup {
   CONTACT
   SOCIAL
   SEO
+  FEATURES    // Feature toggle settings
 }
 
 // === CMS: EVENTS ===

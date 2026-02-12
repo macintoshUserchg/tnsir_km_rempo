@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { TEMPLATES } from '@/config/templates';
 // import { getServerSession } from 'next-auth';
 // import { authOptions } from '@/lib/auth'; // Assuming auth options are exported
 
@@ -12,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     try {
         const body = await req.json();
-        const { titleHi, titleEn, slug, seoTitle, seoDesc, isPublished, typography } = body;
+        const { titleHi, titleEn, slug, seoTitle, seoDesc, isPublished, typography, template: templateId } = body;
 
         // Basic validation
         if (!titleHi || !slug) {
@@ -34,16 +35,37 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const page = await prisma.page.create({
-            data: {
-                titleHi,
-                titleEn,
-                slug,
-                seoTitle,
-                seoDesc,
-                isPublished,
-                typography,
+        // Handle template-based creation
+        const template = TEMPLATES.find(t => t.id === templateId);
+
+        const page = await prisma.$transaction(async (tx: any) => {
+            const newPage = await tx.page.create({
+                data: {
+                    titleHi,
+                    titleEn,
+                    slug,
+                    seoTitle,
+                    seoDesc,
+                    isPublished,
+                    typography,
+                    template: templateId || 'blank',
+                }
+            });
+
+            // Create template sections if they exist
+            if (template && template.sections.length > 0) {
+                await tx.pageSection.createMany({
+                    data: template.sections.map((section, index) => ({
+                        pageId: newPage.id,
+                        type: section.type,
+                        content: section.content,
+                        order: index,
+                        isVisible: true,
+                    }))
+                });
             }
+
+            return newPage;
         });
 
         return NextResponse.json(page, { status: 201 });

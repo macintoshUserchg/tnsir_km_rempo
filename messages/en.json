@@ -28,7 +28,8 @@
         "quickLinks": "Quick Links",
         "subscribe": "Subscribe",
         "source": "Source",
-        "watchOnYouTube": "Watch on YouTube"
+        "watchOnYouTube": "Watch on YouTube",
+        "trackStatus": "Track Status"
     },
     "home": {
         "heroTitle": "In Service of the People",
@@ -115,5 +116,32 @@
         "email": "Email",
         "followUs": "Follow Us",
         "copyright": "© 2024 Dr. Kirodi Lal Meena. All rights reserved."
+    },
+    "features": {
+        "title": "Feature Settings",
+        "description": "Control public-facing features",
+        "publicTracking": {
+            "label": "Public Application Tracking",
+            "description": "Allow citizens to track their application status online"
+        },
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+    },
+    "track": {
+        "title": "Track Application Status",
+        "subtitle": "Enter your application number (C-Number) to check your application status",
+        "searchPlaceholder": "Enter application number (e.g., 20260212-ABC123)",
+        "searchButton": "Search",
+        "notFound": "Application not found. Please check your application number.",
+        "applicationDetails": "Application Details",
+        "applicationNumber": "Application Number",
+        "applicantName": "Applicant Name",
+        "applicationDate": "Application Date",
+        "activityHistory": "Activity History",
+        "unavailable": {
+            "title": "This feature is currently unavailable",
+            "description": "Application tracking is temporarily disabled. Please try again later or contact our office.",
+            "goHome": "Go to Home Page"
+        }
     }
 }
