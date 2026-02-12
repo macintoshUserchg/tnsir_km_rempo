@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import { Link } from '@/i18n/navigation';
+import { useLocale } from 'next-intl';
 import { ArrowRight } from 'lucide-react';
 import { Container } from '@/components/common/Container';
 import { SectionHeading } from '@/components/common/SectionHeading';
@@ -7,6 +10,9 @@ import { Button } from '@/components/common/Button';
 import { biographyData } from '@/data/biography';
 
 export const BiographyPreview: React.FC = () => {
+    const locale = useLocale();
+    const isHindi = locale === 'hi';
+
     return (
         <section className="section-padding bg-gray-50">
             <Container>
@@ -16,7 +22,7 @@ export const BiographyPreview: React.FC = () => {
                         <div className="aspect-square max-w-[280px] sm:max-w-xs md:max-w-none mx-auto lg:mx-0 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl md:rounded-2xl overflow-hidden">
                             <img
                                 src={biographyData.profileImage}
-                                alt="Dr. Kirodi Lal Meena"
+                                alt={isHindi && biographyData.fullNameHi ? biographyData.fullNameHi : "Dr. Kirodi Lal Meena"}
                                 className="w-full h-full object-cover"
                                 loading="lazy"
                             />
@@ -28,21 +34,21 @@ export const BiographyPreview: React.FC = () => {
                     {/* Content */}
                     <div className="text-center lg:text-left">
                         <SectionHeading
-                            title="Biography"
-                            subtitle="Learn about the journey and achievements"
+                            title={isHindi ? "जीवनी" : "Biography"}
+                            subtitle={isHindi ? "जीवन यात्रा और उपलब्धियों के बारे में जानें" : "Learn about the journey and achievements"}
                         />
                         <div className="space-y-3 md:space-y-4 text-gray-700">
                             <p className="text-sm md:text-lg leading-relaxed">
-                                {biographyData.earlyLife.substring(0, 150)}...
+                                {(isHindi && biographyData.earlyLifeHi ? biographyData.earlyLifeHi : biographyData.earlyLife).substring(0, 150)}...
                             </p>
                             <p className="text-sm md:text-lg leading-relaxed hidden sm:block">
-                                {biographyData.politicalCareer.substring(0, 150)}...
+                                {(isHindi && biographyData.politicalCareerHi ? biographyData.politicalCareerHi : biographyData.politicalCareer).substring(0, 150)}...
                             </p>
                         </div>
                         <div className="mt-4 md:mt-6">
-                            <h4 className="font-bold text-lg md:text-xl mb-2 md:mb-3">Key Highlights:</h4>
+                            <h4 className="font-bold text-lg md:text-xl mb-2 md:mb-3">{isHindi ? "प्रमुख झलकियाँ:" : "Key Highlights:"}</h4>
                             <ul className="space-y-1.5 md:space-y-2 text-left">
-                                {biographyData.achievements.slice(0, 3).map((achievement, index) => (
+                                {(isHindi && biographyData.achievementsHi ? biographyData.achievementsHi : biographyData.achievements).slice(0, 3).map((achievement, index) => (
                                     <li key={index} className="flex items-start gap-2 text-sm md:text-base">
                                         <span className="text-orange-500 mt-0.5">✓</span>
                                         <span className="text-gray-700 line-clamp-1 md:line-clamp-none">{achievement}</span>
@@ -55,7 +61,7 @@ export const BiographyPreview: React.FC = () => {
                                 icon={<ArrowRight className="w-4 h-4 md:w-5 md:h-5" />}
                                 className="text-sm md:text-base"
                             >
-                                Read Full Biography
+                                {isHindi ? "पूरी जीवनी पढ़ें" : "Read Full Biography"}
                             </Button>
                         </Link>
                     </div>

@@ -68,19 +68,19 @@ const ApplicationSearchContent = ({ locale, statusCounts }: ApplicationSearchPro
     ];
 
     return (
-        <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm space-y-4 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
+        <div className="dashboard-card border-border p-4 shadow-sm space-y-4 sm:space-y-0 sm:flex sm:items-end sm:gap-4">
             <div className="flex-1 space-y-2">
-                <Label className="text-sm font-medium text-gray-700">
+                <Label className="dashboard-label">
                     {isHindi ? 'खोजें (नाम, पिता का नाम, मोबाइल)' : 'Search (Name, Father Name, Mobile)'}
                 </Label>
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
                     {isHindi ? (
                         <NewReactTransliterate
                             renderComponent={(props) => (
                                 <Input
                                     {...props}
-                                    className="pl-9 h-10 w-full"
+                                    className="pl-9 h-10 w-full bg-background border-border"
                                 />
                             )}
                             value={searchQuery}
@@ -91,7 +91,7 @@ const ApplicationSearchContent = ({ locale, statusCounts }: ApplicationSearchPro
                         />
                     ) : (
                         <Input
-                            className="pl-9 h-10"
+                            className="pl-9 h-10 bg-background border-border"
                             placeholder="Search by Name, Father's Name or Mobile..."
                             value={searchQuery}
                             onChange={(e) => handleSearchChange(e.target.value)}
@@ -101,11 +101,11 @@ const ApplicationSearchContent = ({ locale, statusCounts }: ApplicationSearchPro
             </div>
 
             <div className="w-full sm:w-[200px] space-y-2">
-                <Label className="text-sm font-medium text-gray-700">
+                <Label className="dashboard-label">
                     {isHindi ? 'स्थिति चुनें' : 'Filter by Status'}
                 </Label>
                 <Select value={status} onValueChange={setStatus}>
-                    <SelectTrigger className="h-10 w-full">
+                    <SelectTrigger className="h-10 w-full bg-background border-border">
                         <SelectValue placeholder={isHindi ? 'स्थिति चुनें' : 'Select Status'} />
                     </SelectTrigger>
                     <SelectContent>
@@ -113,7 +113,7 @@ const ApplicationSearchContent = ({ locale, statusCounts }: ApplicationSearchPro
                             <SelectItem key={option.value} value={option.value}>
                                 <span className="flex items-center gap-2 justify-between w-full min-w-[120px]">
                                     {option.label}
-                                    <span className="ml-auto text-xs bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full">
+                                    <span className="ml-auto text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">
                                         {statusCounts[option.value] || 0}
                                     </span>
                                 </span>
@@ -124,7 +124,7 @@ const ApplicationSearchContent = ({ locale, statusCounts }: ApplicationSearchPro
             </div>
 
             {isSearching && (
-                <div className="flex items-center justify-center p-2 text-gray-400">
+                <div className="flex items-center justify-center p-2 text-muted-foreground">
                     <Loader2 className="h-5 w-5 animate-spin" />
                 </div>
             )}

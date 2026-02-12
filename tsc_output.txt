@@ -1,0 +1,45 @@
+.next/dev/types/validator.ts(279,31): error TS2344: Type 'typeof import("/Users/chandangaur/Sites/kirodi-site/drkiodilal.in/src/app/api/admin/menus/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/admin/menus/[id]">'.
+  Types of property 'PATCH' are incompatible.
+    Type '(req: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<{ id: number; order: number; isVisible: boolean; labelHi: string; labelEn: string | null; url: string; parentId: number | null; position: MenuPosition; }> | NextResponse<...>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(297,31): error TS2344: Type 'typeof import("/Users/chandangaur/Sites/kirodi-site/drkiodilal.in/src/app/api/admin/pages/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/admin/pages/[id]">'.
+  Types of property 'PATCH' are incompatible.
+    Type '(req: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<{ id: number; createdAt: Date; updatedAt: Date; slug: string; titleHi: string; titleEn: string | null; isPublished: boolean; seoTitle: string | null; seoDesc: string | null; }> | NextResponse<...>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(306,31): error TS2344: Type 'typeof import("/Users/chandangaur/Sites/kirodi-site/drkiodilal.in/src/app/api/admin/pages/[id]/sections/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/admin/pages/[id]/sections">'.
+  Types of property 'POST' are incompatible.
+    Type '(req: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<{ message: string; }> | NextResponse<{ id: number; type: SectionType; createdAt: Date; ... 4 more ...; pageId: number; }>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(324,31): error TS2344: Type 'typeof import("/Users/chandangaur/Sites/kirodi-site/drkiodilal.in/src/app/api/admin/sections/[id]/move/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/admin/sections/[id]/move">'.
+  Types of property 'POST' are incompatible.
+    Type '(req: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<{ message: string; }>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/dev/types/validator.ts(333,31): error TS2344: Type 'typeof import("/Users/chandangaur/Sites/kirodi-site/drkiodilal.in/src/app/api/admin/sections/[id]/route")' does not satisfy the constraint 'RouteHandlerConfig<"/api/admin/sections/[id]">'.
+  Types of property 'PATCH' are incompatible.
+    Type '(req: NextRequest, { params }: { params: { id: string; }; }) => Promise<NextResponse<{ id: number; type: SectionType; createdAt: Date; updatedAt: Date; order: number; content: JsonValue; isVisible: boolean; pageId: number; }> | NextResponse<...>>' is not assignable to type '(request: NextRequest, context: { params: Promise<{ id: string; }>; }) => void | Response | Promise<void | Response>'.
+      Types of parameters '__1' and 'context' are incompatible.
+        Type '{ params: Promise<{ id: string; }>; }' is not assignable to type '{ params: { id: string; }; }'.
+          Types of property 'params' are incompatible.
+            Property 'id' is missing in type 'Promise<{ id: string; }>' but required in type '{ id: string; }'.
+.next/types/validator.ts(53,39): error TS2307: Cannot find module '../../src/app/[locale]/(public)/biography/page.js' or its corresponding type declarations.
+.next/types/validator.ts(98,39): error TS2307: Cannot find module '../../src/app/[locale]/(public)/journey/page.js' or its corresponding type declarations.
+prisma.config.ts(4,3): error TS2561: Object literal may only specify known properties, but 'datasources' does not exist in type 'PrismaConfig'. Did you mean to write 'datasource'?
+src/app/[locale]/admin/menus/MenuManager.tsx(27,24): error TS2307: Cannot find module '@/components/ui/switch' or its corresponding type declarations.
+src/app/[locale]/admin/menus/MenuManager.tsx(253,51): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/app/[locale]/admin/menus/MenuManager.tsx(260,43): error TS2304: Cannot find name 'Loader2'.
+src/app/[locale]/admin/pages/[id]/PageEditorClient.tsx(9,24): error TS2307: Cannot find module '@/components/ui/switch' or its corresponding type declarations.
+src/app/[locale]/admin/pages/[id]/PageEditorClient.tsx(221,39): error TS2304: Cannot find name 'SectionManager'.
+src/app/[locale]/admin/pages/page.tsx(15,24): error TS2307: Cannot find module 'date-fns' or its corresponding type declarations.
+src/app/api/admin/pages/route.ts(3,10): error TS2614: Module '"next-auth"' has no exported member 'getServerSession'. Did you mean to use 'import getServerSession from "next-auth"' instead?

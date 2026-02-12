@@ -91,15 +91,15 @@ export default async function ReportsPage({ params }: Props) {
             {/* Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    <h1 className="dashboard-title">
                         {isHindi ? 'रिपोर्ट्स और विश्लेषण' : 'Reports & Analytics'}
                     </h1>
-                    <p className="text-gray-500 mt-1">
+                    <p className="dashboard-body mt-1">
                         {isHindi ? `कुल ${totalApps} आवेदनों का विश्लेषण` : `Analytics for ${totalApps} total applications`}
                     </p>
                 </div>
                 <a href={`/api/export/applications`} download>
-                    <Button className="bg-emerald-600 hover:bg-emerald-700 gap-2">
+                    <Button className="bg-emerald-600 hover:bg-emerald-700 gap-2 text-white">
                         <Download className="h-4 w-4" />
                         {isHindi ? 'Excel में निर्यात करें' : 'Export to Excel'}
                     </Button>
@@ -108,49 +108,49 @@ export default async function ReportsPage({ params }: Props) {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <Card className="border-0 shadow-sm bg-gradient-to-br from-blue-50 to-blue-100">
+                <Card className="dashboard-card bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/10 border-0">
                     <CardContent className="p-5 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
                             <FileText className="h-6 w-6 text-white" />
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-gray-900">{totalApps}</p>
-                            <p className="text-sm text-gray-600">{isHindi ? 'कुल' : 'Total'}</p>
+                            <p className="dashboard-stat">{totalApps}</p>
+                            <p className="dashboard-label">{isHindi ? 'कुल' : 'Total'}</p>
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="border-0 shadow-sm bg-gradient-to-br from-emerald-50 to-emerald-100">
+                <Card className="dashboard-card bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/30 dark:to-emerald-900/10 border-0">
                     <CardContent className="p-5 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
                             <CheckCircle className="h-6 w-6 text-white" />
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-gray-900">{resolvedCount}</p>
-                            <p className="text-sm text-gray-600">{isHindi ? 'समाधान' : 'Resolved'}</p>
+                            <p className="dashboard-stat">{resolvedCount}</p>
+                            <p className="dashboard-label">{isHindi ? 'समाधान' : 'Resolved'}</p>
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="border-0 shadow-sm bg-gradient-to-br from-amber-50 to-amber-100">
+                <Card className="dashboard-card bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-950/30 dark:to-amber-900/10 border-0">
                     <CardContent className="p-5 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
                             <Clock className="h-6 w-6 text-white" />
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-gray-900">{pendingCount}</p>
-                            <p className="text-sm text-gray-600">{isHindi ? 'लंबित' : 'Pending'}</p>
+                            <p className="dashboard-stat">{pendingCount}</p>
+                            <p className="dashboard-label">{isHindi ? 'लंबित' : 'Pending'}</p>
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="border-0 shadow-sm bg-gradient-to-br from-purple-50 to-purple-100">
+                <Card className="dashboard-card bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/30 dark:to-purple-900/10 border-0">
                     <CardContent className="p-5 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-purple-500 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-xl bg-purple-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
                             <TrendingUp className="h-6 w-6 text-white" />
                         </div>
                         <div>
-                            <p className="text-2xl font-bold text-gray-900">
+                            <p className="dashboard-stat">
                                 {totalApps > 0 ? ((resolvedCount / totalApps) * 100).toFixed(0) : 0}%
                             </p>
-                            <p className="text-sm text-gray-600">{isHindi ? 'समाधान दर' : 'Resolution'}</p>
+                            <p className="dashboard-label">{isHindi ? 'समाधान दर' : 'Resolution'}</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -159,15 +159,15 @@ export default async function ReportsPage({ params }: Props) {
             {/* Charts Row 1 */}
             <div className="grid lg:grid-cols-2 gap-6">
                 {/* Status Distribution Pie Chart */}
-                <Card className="border-0 shadow-sm">
-                    <CardHeader className="border-b bg-gray-50/50 pb-4">
+                <Card className="border-0 shadow-sm bg-card">
+                    <CardHeader className="border-b border-border bg-muted/30 pb-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center">
-                                <PieChartIcon className="h-5 w-5 text-orange-600" />
+                            <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-950/30 flex items-center justify-center shadow-sm">
+                                <PieChartIcon className="h-5 w-5 text-orange-600 dark:text-orange-400" />
                             </div>
                             <div>
-                                <CardTitle className="text-lg">{isHindi ? 'स्थिति वितरण' : 'Status Distribution'}</CardTitle>
-                                <CardDescription>{isHindi ? 'आवेदनों की स्थिति के अनुसार' : 'By application status'}</CardDescription>
+                                <CardTitle className="dashboard-section">{isHindi ? 'स्थिति वितरण' : 'Status Distribution'}</CardTitle>
+                                <CardDescription className="dashboard-label">{isHindi ? 'आवेदनों की स्थिति के अनुसार' : 'By application status'}</CardDescription>
                             </div>
                         </div>
                     </CardHeader>
@@ -177,15 +177,15 @@ export default async function ReportsPage({ params }: Props) {
                 </Card>
 
                 {/* Monthly Trend Line Chart */}
-                <Card className="border-0 shadow-sm">
-                    <CardHeader className="border-b bg-gray-50/50 pb-4">
+                <Card className="border-0 shadow-sm bg-card">
+                    <CardHeader className="border-b border-border bg-muted/30 pb-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                                <TrendingUp className="h-5 w-5 text-blue-600" />
+                            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/30 flex items-center justify-center shadow-sm">
+                                <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                             </div>
                             <div>
-                                <CardTitle className="text-lg">{isHindi ? 'मासिक प्रवृत्ति' : 'Monthly Trend'}</CardTitle>
-                                <CardDescription>{isHindi ? 'पिछले 6 महीनों का डेटा' : 'Last 6 months data'}</CardDescription>
+                                <CardTitle className="dashboard-section">{isHindi ? 'मासिक प्रवृत्ति' : 'Monthly Trend'}</CardTitle>
+                                <CardDescription className="dashboard-label">{isHindi ? 'पिछले 6 महीनों का डेटा' : 'Last 6 months data'}</CardDescription>
                             </div>
                         </div>
                     </CardHeader>
@@ -196,15 +196,15 @@ export default async function ReportsPage({ params }: Props) {
             </div>
 
             {/* Vidhansabha Bar Chart */}
-            <Card className="border-0 shadow-sm">
-                <CardHeader className="border-b bg-gray-50/50 pb-4">
+            <Card className="border-0 shadow-sm bg-card">
+                <CardHeader className="border-b border-border bg-muted/30 pb-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
-                            <MapPin className="h-5 w-5 text-green-600" />
+                        <div className="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-950/30 flex items-center justify-center shadow-sm">
+                            <MapPin className="h-5 w-5 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                            <CardTitle className="text-lg">{isHindi ? 'विधानसभा अनुसार आवेदन' : 'Applications by Vidhansabha'}</CardTitle>
-                            <CardDescription>{isHindi ? 'शीर्ष 10 विधानसभाएं' : 'Top 10 constituencies'}</CardDescription>
+                            <CardTitle className="dashboard-section">{isHindi ? 'विधानसभा अनुसार आवेदन' : 'Applications by Vidhansabha'}</CardTitle>
+                            <CardDescription className="dashboard-label">{isHindi ? 'शीर्ष 10 विधानसभाएं' : 'Top 10 constituencies'}</CardDescription>
                         </div>
                     </div>
                 </CardHeader>
@@ -214,15 +214,15 @@ export default async function ReportsPage({ params }: Props) {
             </Card>
 
             {/* Work Type Grid */}
-            <Card className="border-0 shadow-sm">
-                <CardHeader className="border-b bg-gray-50/50 pb-4">
+            <Card className="border-0 shadow-sm bg-card">
+                <CardHeader className="border-b border-border bg-muted/30 pb-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
-                            <FileSpreadsheet className="h-5 w-5 text-purple-600" />
+                        <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/30 flex items-center justify-center shadow-sm">
+                            <FileSpreadsheet className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                         </div>
                         <div>
-                            <CardTitle className="text-lg">{isHindi ? 'कार्य प्रकार अनुसार' : 'By Work Type'}</CardTitle>
-                            <CardDescription>{isHindi ? 'सभी कार्य श्रेणियां' : 'All work categories'}</CardDescription>
+                            <CardTitle className="dashboard-section">{isHindi ? 'कार्य प्रकार अनुसार' : 'By Work Type'}</CardTitle>
+                            <CardDescription className="dashboard-label">{isHindi ? 'सभी कार्य श्रेणियां' : 'All work categories'}</CardDescription>
                         </div>
                     </div>
                 </CardHeader>
@@ -232,20 +232,20 @@ export default async function ReportsPage({ params }: Props) {
                             const wt = workTypeMap[stat.workTypeId];
                             const percentage = totalApps > 0 ? ((stat._count.id / totalApps) * 100).toFixed(1) : 0;
                             return (
-                                <div key={stat.workTypeId} className="p-4 bg-gray-50 rounded-xl border hover:shadow-sm transition-shadow">
+                                <div key={stat.workTypeId} className="p-4 bg-muted/30 rounded-xl border border-border hover:shadow-sm transition-all group">
                                     <div className="flex items-center justify-between mb-3">
-                                        <span className="text-sm font-semibold text-gray-700">
+                                        <span className="dashboard-body font-bold text-foreground/80 group-hover:text-orange-600 transition-colors">
                                             {isHindi ? wt?.nameHi : (wt?.nameEn || wt?.nameHi)}
                                         </span>
-                                        <span className="font-bold text-orange-600 text-lg">{stat._count.id}</span>
+                                        <span className="dashboard-stat text-orange-600 dark:text-orange-500 text-lg">{stat._count.id}</span>
                                     </div>
-                                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                    <div className="w-full bg-muted rounded-full h-2.5">
                                         <div
                                             className="bg-gradient-to-r from-orange-500 to-orange-400 h-2.5 rounded-full transition-all"
                                             style={{ width: `${percentage}%` }}
                                         />
                                     </div>
-                                    <p className="text-xs text-gray-500 mt-2">{percentage}% {isHindi ? 'कुल का' : 'of total'}</p>
+                                    <p className="dashboard-label mt-2">{percentage}% {isHindi ? 'कुल का' : 'of total'}</p>
                                 </div>
                             );
                         })}

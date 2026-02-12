@@ -133,7 +133,7 @@ model ActivityLog {
   @@map("activity_logs")
 }
 
-// === CMS ===
+// === CMS: EXISTING ===
 model PressRelease {
   id        Int      @id @default(autoincrement())
   slug      String   @unique
@@ -178,4 +178,200 @@ model TimelineEvent {
   imageUrl String? @map("image_url")
 
   @@map("timeline_events")
+}
+
+// === CMS: DYNAMIC PAGE BUILDER ===
+
+model Page {
+  id          Int           @id @default(autoincrement())
+  slug        String        @unique
+  titleHi     String        @map("title_hi")
+  titleEn     String?       @map("title_en")
+  isPublished Boolean       @default(false) @map("is_published")
+  seoTitle    String?       @map("seo_title")
+  seoDesc     String?       @map("seo_desc")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  typography  Json?         @map("typography")
+
+  sections    PageSection[]
+
+  @@map("pages")
+}
+
+model PageSection {
+  id          Int      @id @default(autoincrement())
+  pageId      Int      @map("page_id")
+  page        Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  type        SectionType
+  order       Int      @default(0)
+  content     Json     // Stores type-specific data (e.g. { "title": "...", "items": [...] })
+  isVisible   Boolean  @default(true) @map("is_visible")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("page_sections")
+}
+
+enum SectionType {
+  HERO
+  RICHTEXT
+  TIMELINE
+  GALLERY
+  VIDEOS
+  CONTACT_FORM
+  FEATURES
+  TESTIMONIALS
+  FAQ
+}
+
+// === CMS: GLOBAL SETTINGS ===
+
+model SiteSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique // e.g., "hero_title", "contact_email"
+  value     String   @db.Text
+  type      SettingType @default(TEXT)
+  group     SettingGroup @default(GENERAL)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}
+
+enum SettingType {
+  TEXT
+  RICHTEXT
+  IMAGE
+  BOOLEAN
+}
+
+enum SettingGroup {
+  GENERAL
+  HERO
+  CONTACT
+  SOCIAL
+  SEO
+}
+
+// === CMS: EVENTS ===
+
+model Event {
+  id            Int      @id @default(autoincrement())
+  titleHi       String   @map("title_hi")
+  titleEn       String?  @map("title_en")
+  descriptionHi String?  @map("description_hi") @db.Text
+  descriptionEn String?  @map("description_en") @db.Text
+  locationHi    String?  @map("location_hi")
+  locationEn    String?  @map("location_en")
+  date          DateTime
+  category      String   // e.g. "public-meeting", "inauguration"
+  images        String[] // Array of image URLs
+  isUpcoming    Boolean  @default(true) @map("is_upcoming")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("events")
+}
+
+// === CMS: NAVIGATION ===
+
+model Menu {
+  id        Int      @id @default(autoincrement())
+  labelHi   String   @map("label_hi")
+  labelEn   String?  @map("label_en")
+  url       String
+  order     Int      @default(0)
+  parentId  Int?     @map("parent_id")
+  parent    Menu?    @relation("MenuHierarchy", fields: [parentId], references: [id])
+  children  Menu[]   @relation("MenuHierarchy")
+  position  MenuPosition @default(HEADER)
+  isVisible Boolean  @default(true) @map("is_visible")
+
+  @@map("menus")
+}
+
+enum MenuPosition {
+  HEADER
+  FOOTER
+  SIDEBAR
+}
+
+// === CMS: CONTENT RESOURCES ===
+
+model GalleryAlbum {
+  id          Int      @id @default(autoincrement())
+  titleHi     String   @map("title_hi")
+  titleEn     String?  @map("title_en")
+  coverImage  String?  @map("cover_image")
+  description String?  @db.Text
+  order       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  photos      GalleryPhoto[]
+
+  @@map("gallery_albums")
+}
+
+model GalleryPhoto {
+  id        Int      @id @default(autoincrement())
+  albumId   Int      @map("album_id")
+  album     GalleryAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  imageUrl  String   @map("image_url")
+  captionHi String?  @map("caption_hi")
+  captionEn String?  @map("caption_en")
+  order     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("gallery_photos")
+}
+
+model Video {
+  id          Int      @id @default(autoincrement())
+  titleHi     String   @map("title_hi")
+  titleEn     String?  @map("title_en")
+  videoUrl    String   @map("video_url") // YouTube/Vimeo link
+  thumbnailUrl String? @map("thumbnail_url")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("videos")
+}
+
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String?
+  messageHi String   @map("message_hi") @db.Text
+  messageEn String?  @map("message_en") @db.Text
+  imageUrl  String?  @map("image_url")
+  isVisible Boolean  @default(true) @map("is_visible")
+  order     Int      @default(0)
+
+  @@map("testimonials")
+}
+
+model ContactQuery {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String?
+  mobile    String?
+  subject   String?
+  message   String   @db.Text
+  status    QueryStatus @default(NEW)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("contact_queries")
+}
+
+enum QueryStatus {
+  NEW
+  READ
+  RESPONDED
+  SPAM
 }

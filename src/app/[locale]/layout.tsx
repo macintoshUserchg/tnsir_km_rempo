@@ -7,15 +7,19 @@ import { routing } from '@/i18n/routing';
 import "../globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { SplashScreen } from '@/components/SplashScreen';
+import { ThemeProvider } from "@/components/theme-provider";
+import TypographySync from "@/components/layout/TypographySync";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
     subsets: ["latin"],
+    weight: ["400", "500", "600", "700"],
 });
 
 const geistMono = Geist_Mono({
     variable: "--font-geist-mono",
     subsets: ["latin"],
+    weight: ["400", "500"],
 });
 
 const notoSansDevanagari = Noto_Sans_Devanagari({
@@ -53,12 +57,20 @@ export default async function LocaleLayout({ children, params }: Props) {
     const messages = await getMessages();
 
     return (
-        <html lang={locale} dir={locale === 'hi' ? 'ltr' : 'ltr'}>
+        <html lang={locale} dir={locale === 'hi' ? 'ltr' : 'ltr'} suppressHydrationWarning>
             <body className={`${geistSans.variable} ${geistMono.variable} ${notoSansDevanagari.variable} antialiased ${locale === 'hi' ? 'lang-hi' : ''}`}>
                 <NextIntlClientProvider messages={messages}>
-                    <SplashScreen />
-                    {children}
-                    <Toaster />
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                        disableTransitionOnChange
+                    >
+                        <SplashScreen />
+                        <TypographySync />
+                        {children}
+                        <Toaster />
+                    </ThemeProvider>
                 </NextIntlClientProvider>
             </body>
         </html>

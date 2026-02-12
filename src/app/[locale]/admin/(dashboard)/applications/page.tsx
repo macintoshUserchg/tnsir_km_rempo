@@ -75,10 +75,10 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
             {/* Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    <h1 className="dashboard-title">
                         {isHindi ? 'आवेदन सूची' : 'Applications'}
                     </h1>
-                    <p className="text-gray-500 mt-1">
+                    <p className="dashboard-body mt-1">
                         {isHindi ? `कुल ${totalCount} आवेदन` : `Total ${totalCount} applications`}
                     </p>
                 </div>
@@ -108,7 +108,7 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
                 {applications.length > 0 ? (
                     applications.map((app) => (
                         <Link key={app.id} href={`/admin/applications/${app.id}`} className="block h-full">
-                            <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-200 cursor-pointer group h-full flex flex-col overflow-hidden relative">
+                            <Card className="dashboard-card cursor-pointer group h-full flex flex-col relative">
                                 {/* Status Accent Bar */}
                                 <div className={`absolute top-0 left-0 bottom-0 w-1 ${app.status === 'PENDING' ? 'bg-amber-500' :
                                     app.status === 'IN_PROGRESS' ? 'bg-purple-500' :
@@ -120,14 +120,14 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
                                             <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-1">
+                                                <h3 className="dashboard-section group-hover:text-orange-600 transition-colors line-clamp-1">
                                                     {app.name}
                                                 </h3>
-                                                <span className="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                                                <span className="dashboard-mono bg-muted px-2 py-0.5 rounded border border-border">
                                                     {app.cNumber}
                                                 </span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                                            <div className="flex items-center gap-2 dashboard-label">
                                                 <Phone className="h-3.5 w-3.5" />
                                                 <span>{app.mobile}</span>
                                             </div>
@@ -136,27 +136,27 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
                                     </div>
 
                                     {/* Details Grid */}
-                                    <div className="grid grid-cols-2 gap-3 mb-5 bg-gray-50/50 p-3 rounded-lg border border-gray-100">
+                                    <div className="grid grid-cols-2 gap-3 mb-5 bg-muted/30 p-3 rounded-lg border border-border">
                                         <div className="flex flex-col gap-1">
-                                            <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">{isHindi ? 'विधानसभा' : 'Vidhansabha'}</span>
-                                            <div className="flex items-center gap-1.5 text-sm font-medium text-gray-700">
-                                                <MapPin className="h-3.5 w-3.5 text-gray-400" />
+                                            <span className="dashboard-label uppercase tracking-wider">{isHindi ? 'विधानसभा' : 'Vidhansabha'}</span>
+                                            <div className="flex items-center gap-1.5 dashboard-body font-bold text-foreground/80">
+                                                <MapPin className="h-3.5 w-3.5 text-orange-600/60" />
                                                 <span className="truncate">{isHindi ? app.vidhansabha.nameHi : (app.vidhansabha.nameEn || app.vidhansabha.nameHi)}</span>
                                             </div>
                                         </div>
                                         <div className="flex flex-col gap-1">
-                                            <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">{isHindi ? 'कार्य प्रकार' : 'Work Type'}</span>
-                                            <div className="flex items-center gap-1.5 text-sm font-medium text-gray-700">
-                                                <FileText className="h-3.5 w-3.5 text-gray-400" />
+                                            <span className="dashboard-label uppercase tracking-wider">{isHindi ? 'कार्य प्रकार' : 'Work Type'}</span>
+                                            <div className="flex items-center gap-1.5 dashboard-body font-bold text-foreground/80">
+                                                <FileText className="h-3.5 w-3.5 text-orange-600/60" />
                                                 <span className="truncate">{isHindi ? app.workType.nameHi : (app.workType.nameEn || app.workType.nameHi)}</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Footer */}
-                                    <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-                                        <div className="text-xs text-gray-400 font-medium flex items-center gap-1.5">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+                                    <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
+                                        <div className="dashboard-mono text-[10px] flex items-center gap-1.5">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-orange-600/30"></span>
                                             {new Date(app.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-IN', {
                                                 day: 'numeric',
                                                 month: 'short',
@@ -165,7 +165,7 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
                                                 minute: '2-digit'
                                             })}
                                         </div>
-                                        <div className="text-sm font-medium text-orange-600 flex items-center gap-1 group-hover:gap-2 transition-all">
+                                        <div className="text-sm font-bold text-orange-600 flex items-center gap-1 group-hover:gap-2 transition-all">
                                             {isHindi ? 'विवरण देखें' : 'View Details'}
                                             <ChevronRight className="h-4 w-4" />
                                         </div>
@@ -176,15 +176,15 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
                     ))
                 ) : (
                     <div className="col-span-full">
-                        <Card className="border-0 shadow-sm border-dashed border-2 border-gray-200">
+                        <Card className="border-0 shadow-sm border-dashed border-2 border-border bg-card">
                             <CardContent className="py-16 text-center">
-                                <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mx-auto mb-4">
-                                    <Search className="h-8 w-8 text-gray-400" />
+                                <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+                                    <Search className="h-8 w-8 text-muted-foreground" />
                                 </div>
-                                <h3 className="text-lg font-medium text-gray-900 mb-1">
+                                <h3 className="text-lg font-medium text-foreground mb-1">
                                     {isHindi ? 'कोई आवेदन नहीं मिला' : 'No Applications Found'}
                                 </h3>
-                                <p className="text-gray-500 text-sm max-w-sm mx-auto">
+                                <p className="text-muted-foreground text-sm max-w-sm mx-auto">
                                     {isHindi ? 'वर्तमान फ़िल्टर के साथ कोई परिणाम नहीं मिला। कृपया फ़िल्टर बदलें या नया आवेदन जोड़ें।' : 'No results found matching your current filters. Try adjusting filters or add a new application.'}
                                 </p>
                             </CardContent>

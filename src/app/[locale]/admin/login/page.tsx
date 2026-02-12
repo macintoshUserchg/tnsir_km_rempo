@@ -47,16 +47,20 @@ export default function AdminLoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 p-4">
-            <Card className="w-full max-w-md">
-                <CardHeader className="text-center">
-                    <div className="mx-auto w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                        <Lock className="h-6 w-6 text-orange-600" />
+        <div className="min-h-screen flex items-center justify-center bg-background text-foreground p-4 relative overflow-hidden">
+            {/* Background decorative elements */}
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-orange-500/5 to-transparent dark:from-orange-500/10 pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-full h-full bg-gradient-to-tl from-orange-500/5 to-transparent dark:from-orange-500/10 pointer-events-none" />
+
+            <Card className="w-full max-w-md relative z-10 shadow-xl border-border/50 bg-card/80 backdrop-blur-sm">
+                <CardHeader className="text-center space-y-1">
+                    <div className="mx-auto w-16 h-16 bg-orange-100 dark:bg-orange-950/50 rounded-2xl flex items-center justify-center mb-4 transition-colors">
+                        <Lock className="h-8 w-8 text-orange-600 dark:text-orange-500" />
                     </div>
-                    <CardTitle className="text-2xl">
+                    <CardTitle className="dashboard-title text-2xl">
                         {isHindi ? 'एडमिन लॉगिन' : 'Admin Login'}
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="dashboard-body">
                         {isHindi
                             ? 'अपने क्रेडेंशियल्स के साथ लॉगिन करें'
                             : 'Sign in with your credentials'}
@@ -71,7 +75,7 @@ export default function AdminLoginPage() {
                         )}
 
                         <div className="space-y-2">
-                            <Label htmlFor="email">{isHindi ? 'ईमेल' : 'Email'}</Label>
+                            <Label htmlFor="email" className="dashboard-label">{isHindi ? 'ईमेल' : 'Email'}</Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -83,7 +87,7 @@ export default function AdminLoginPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="password">{isHindi ? 'पासवर्ड' : 'Password'}</Label>
+                            <Label htmlFor="password" className="dashboard-label">{isHindi ? 'पासवर्ड' : 'Password'}</Label>
                             <Input
                                 id="password"
                                 type="password"

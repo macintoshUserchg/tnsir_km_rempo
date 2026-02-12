@@ -74,7 +74,7 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
         formData.append('folder', folder);
         formData.append('upload_preset', upload_preset);
 
-        const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
             method: 'POST',
             body: formData
         });
@@ -165,15 +165,15 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
 
     if (success) {
         return (
-            <Card className="max-w-2xl mx-auto shadow-lg border-0">
+            <Card className="max-w-2xl mx-auto shadow-lg border border-border bg-card">
                 <CardContent className="py-16 text-center">
-                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <CheckCircle className="h-10 w-10 text-green-600" />
+                    <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <CheckCircle className="h-10 w-10 text-green-600 dark:text-green-400" />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    <h2 className="dashboard-title text-2xl mb-2">
                         {isHindi ? 'आवेदन सफलतापूर्वक जमा हुआ!' : 'Application Submitted Successfully!'}
                     </h2>
-                    <p className="text-gray-500">
+                    <p className="dashboard-body text-muted-foreground">
                         {isHindi ? 'आवेदन सूची पर रीडायरेक्ट कर रहा है...' : 'Redirecting to applications list...'}
                     </p>
                 </CardContent>
@@ -185,9 +185,9 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
             {/* Error Banner */}
             {error && (
-                <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-5 py-4 rounded-r-lg flex items-start gap-3">
+                <div className="bg-red-50 dark:bg-red-950/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 px-5 py-4 rounded-r-lg flex items-start gap-3">
                     <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm font-medium">{error}</span>
+                    <span className="dashboard-label text-sm">{error}</span>
                 </div>
             )}
 
@@ -225,7 +225,7 @@ export default function AdminApplicationForm({ locale, vidhansabhas, workTypes }
                     type="submit"
                     size="lg"
                     disabled={submitting || uploading}
-                    className="h-12 px-8 bg-orange-600 hover:bg-orange-700"
+                    className="h-12 px-8 bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/20"
                 >
                     {submitting ? (
                         <>

@@ -47,23 +47,23 @@ export default function StatusUpdateForm({ applicationId, currentStatus, locale 
     };
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>{isHindi ? 'स्थिति अपडेट करें' : 'Update Status'}</CardTitle>
+        <Card className="dashboard-card border-0">
+            <CardHeader className="border-b border-border bg-muted/30">
+                <CardTitle className="dashboard-section">{isHindi ? 'स्थिति अपडेट करें' : 'Update Status'}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-6 space-y-4">
                 <div className="space-y-2">
-                    <Label>{isHindi ? 'नई स्थिति' : 'New Status'}</Label>
+                    <Label className="dashboard-label">{isHindi ? 'नई स्थिति' : 'New Status'}</Label>
                     <Select
                         value={status}
                         onValueChange={(value) => setStatus(value as AppStatus)}
                     >
-                        <SelectTrigger>
+                        <SelectTrigger className="bg-background border-border text-foreground">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-popover border-border">
                             {statusOptions.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
+                                <SelectItem key={option.value} value={option.value} className="text-foreground focus:bg-accent focus:text-accent-foreground">
                                     {isHindi ? option.labelHi : option.labelEn}
                                 </SelectItem>
                             ))}
@@ -72,18 +72,19 @@ export default function StatusUpdateForm({ applicationId, currentStatus, locale 
                 </div>
 
                 <div className="space-y-2">
-                    <Label>{isHindi ? 'टिप्पणी (वैकल्पिक)' : 'Note (optional)'}</Label>
+                    <Label className="dashboard-label">{isHindi ? 'टिप्पणी (वैकल्पिक)' : 'Note (optional)'}</Label>
                     <Textarea
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
                         placeholder={isHindi ? 'अपनी टिप्पणी यहाँ लिखें...' : 'Add your note here...'}
                         rows={3}
+                        className="bg-background border-border text-foreground placeholder:text-muted-foreground focus-visible:ring-orange-500"
                     />
                 </div>
 
                 <Button
                     onClick={handleSubmit}
-                    className="w-full bg-orange-600 hover:bg-orange-700"
+                    className="w-full bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/20"
                     disabled={isPending || status === currentStatus}
                 >
                     {isPending ? (

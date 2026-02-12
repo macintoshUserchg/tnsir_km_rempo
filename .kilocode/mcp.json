@@ -1,0 +1,78 @@
+{
+    "mcpServers": {
+        "dart-mcp-server": {
+            "command": "dart",
+            "args": [
+                "mcp-server"
+            ],
+            "env": {}
+        },
+        "context7": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@upstash/context7-mcp"
+            ],
+            "env": {
+                "DEFAULT_MINIMUM_TOKENS": ""
+            }
+        },
+        "sequential-thinking": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-sequential-thinking"
+            ],
+            "env": {}
+        },
+        "filesystem": {
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                "/Users/chandangaur/Sites/kirodi-site/drkiodilal.in"
+            ],
+            "command": "npx",
+            "disabled": false,
+            "env": {}
+        },
+        "memory": {
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-memory"
+            ],
+            "command": "npx",
+            "disabled": false,
+            "env": {
+                "MEMORY_FILE_PATH": "/Users/chandangaur/Sites/kirodi-site/drkiodilal.in/memory.json"
+            }
+        },
+        "prisma-mcp-server": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "prisma",
+                "mcp"
+            ],
+            "env": {
+                "DATABASE_URL": "postgresql://neondb_owner:npg_8arLBwJ4NMDt@ep-young-meadow-a1fs9ea9-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+                "PRISMA_SCHEMA_PATH": "/Users/chandangaur/Sites/kirodi-site/drkiodilal.in/prisma/schema.prisma"
+            }
+        },
+        "firecrawl-mcp": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "firecrawl-mcp"
+            ],
+            "env": {
+                "FIRECRAWL_API_KEY": "fc-f9e993c36b6542dab609c8b218b95f4a",
+                "FIRECRAWL_RETRY_MAX_ATTEMPTS": "5",
+                "FIRECRAWL_RETRY_INITIAL_DELAY": "2000",
+                "FIRECRAWL_RETRY_MAX_DELAY": "30000",
+                "FIRECRAWL_RETRY_BACKOFF_FACTOR": "3",
+                "FIRECRAWL_CREDIT_WARNING_THRESHOLD": "2000",
+                "FIRECRAWL_CREDIT_CRITICAL_THRESHOLD": "500"
+            }
+        }
+    }
+}

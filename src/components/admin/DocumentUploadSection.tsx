@@ -54,15 +54,15 @@ export const DocumentUploadSection: React.FC<DocumentUploadSectionProps> = ({
     };
 
     return (
-        <Card className="shadow-sm border-0 ring-1 ring-gray-100">
-            <CardHeader className="pb-4 border-b bg-gray-50/50">
+        <Card className="dashboard-card border-0">
+            <CardHeader className="pb-4 border-b border-border bg-muted/30">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                        <FileStack className="h-5 w-5 text-purple-600" />
+                    <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                        <FileStack className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div>
-                        <CardTitle className="text-lg">{isHindi ? 'दस्तावेज़ अपलोड' : 'Document Upload'}</CardTitle>
-                        <CardDescription>{isHindi ? 'संबंधित दस्तावेज़ और फोटो अपलोड करें' : 'Upload related documents and photos'}</CardDescription>
+                        <CardTitle className="dashboard-section">{isHindi ? 'दस्तावेज़ अपलोड' : 'Document Upload'}</CardTitle>
+                        <CardDescription className="dashboard-label">{isHindi ? 'संबंधित दस्तावेज़ और फोटो अपलोड करें' : 'Upload related documents and photos'}</CardDescription>
                     </div>
                 </div>
             </CardHeader>
@@ -70,42 +70,42 @@ export const DocumentUploadSection: React.FC<DocumentUploadSectionProps> = ({
                 {/* PDF Upload */}
                 <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                        <Label className="text-sm font-medium text-gray-700">
+                        <Label className="dashboard-label">
                             {isHindi ? 'PDF दस्तावेज़' : 'PDF Document'}
                         </Label>
-                        <span className="text-xs text-gray-400">{isHindi ? 'अधिकतम 5MB' : 'Max 5MB'}</span>
+                        <span className="dashboard-label text-[10px]">{isHindi ? 'अधिकतम 5MB' : 'Max 5MB'}</span>
                     </div>
                     {pdfFile ? (
-                        <div className="flex items-center justify-between p-4 bg-red-50 rounded-xl border border-red-100">
+                        <div className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-950/20 rounded-xl border border-red-100 dark:border-red-900/30">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                                    <FileText className="h-5 w-5 text-red-600" />
+                                <div className="w-10 h-10 bg-red-100 dark:bg-red-900/40 rounded-lg flex items-center justify-center">
+                                    <FileText className="h-5 w-5 text-red-600 dark:text-red-400" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900 truncate max-w-[200px] sm:max-w-xs">
+                                    <p className="dashboard-section text-sm truncate max-w-[200px] sm:max-w-xs">
                                         {pdfFile.originalName}
                                     </p>
-                                    <p className="text-xs text-gray-500">
+                                    <p className="dashboard-label">
                                         {(pdfFile.size / 1024 / 1024).toFixed(2)} MB
                                     </p>
                                 </div>
                             </div>
-                            <Button type="button" variant="ghost" size="sm" onClick={onRemovePdf} className="text-red-600 hover:text-red-700 hover:bg-red-100">
+                            <Button type="button" variant="ghost" size="sm" onClick={onRemovePdf} className="text-red-600 dark:text-red-400 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/40">
                                 <X className="h-4 w-4" />
                             </Button>
                         </div>
                     ) : (
                         <div
                             onClick={() => pdfInputRef.current?.click()}
-                            className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50/30 transition-all group"
+                            className="border-2 border-dashed border-border rounded-xl p-8 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50/10 transition-all group"
                         >
-                            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-orange-100 transition-colors">
-                                <Upload className="h-5 w-5 text-gray-400 group-hover:text-orange-600 transition-colors" />
+                            <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 transition-colors">
+                                <Upload className="h-5 w-5 text-muted-foreground group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors" />
                             </div>
-                            <p className="text-sm font-medium text-gray-700">
+                            <p className="dashboard-section text-sm">
                                 {isHindi ? 'PDF फ़ाइल अपलोड करें' : 'Upload PDF file'}
                             </p>
-                            <p className="text-xs text-gray-400 mt-1">
+                            <p className="dashboard-label mt-1">
                                 {isHindi ? 'क्लिक करें या खींचकर छोड़ें' : 'Click or drag and drop'}
                             </p>
                         </div>
@@ -122,10 +122,10 @@ export const DocumentUploadSection: React.FC<DocumentUploadSectionProps> = ({
                 {/* Image Uploads */}
                 <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                        <Label className="text-sm font-medium text-gray-700">
+                        <Label className="dashboard-label">
                             {isHindi ? 'फोटो / चित्र' : 'Photos / Images'}
                         </Label>
-                        <span className="text-xs text-gray-400">{isHindi ? 'प्रत्येक अधिकतम 2MB' : 'Max 2MB each'}</span>
+                        <span className="dashboard-label text-[10px]">{isHindi ? 'प्रत्येक अधिकतम 2MB' : 'Max 2MB each'}</span>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                         {images.map((img, index) => (
@@ -133,7 +133,7 @@ export const DocumentUploadSection: React.FC<DocumentUploadSectionProps> = ({
                                 <img
                                     src={img.url}
                                     alt={img.originalName}
-                                    className="w-full h-full object-cover rounded-xl border border-gray-200"
+                                    className="w-full h-full object-cover rounded-xl border border-border"
                                 />
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
                                     <Button
@@ -146,7 +146,7 @@ export const DocumentUploadSection: React.FC<DocumentUploadSectionProps> = ({
                                         <X className="h-4 w-4" />
                                     </Button>
                                 </div>
-                                <p className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 rounded-b-xl truncate text-center">
+                                <p className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[10px] p-1.5 rounded-b-xl truncate text-center">
                                     {img.originalName}
                                 </p>
                             </div>
@@ -155,12 +155,12 @@ export const DocumentUploadSection: React.FC<DocumentUploadSectionProps> = ({
                         {/* Add Image Button */}
                         <div
                             onClick={() => imageInputRef.current?.click()}
-                            className="aspect-square border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-orange-400 hover:bg-orange-50/30 transition-all group"
+                            className="aspect-square border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-orange-400 hover:bg-orange-50/10 transition-all group"
                         >
-                            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mb-2 group-hover:bg-orange-100 transition-colors">
-                                <Plus className="h-5 w-5 text-gray-400 group-hover:text-orange-600 transition-colors" />
+                            <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center mb-2 group-hover:bg-orange-100 dark:group-hover:bg-orange-900/30 transition-colors">
+                                <Plus className="h-5 w-5 text-muted-foreground group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors" />
                             </div>
-                            <span className="text-xs text-gray-500 group-hover:text-orange-600 transition-colors">
+                            <span className="text-xs text-muted-foreground group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
                                 {isHindi ? 'फोटो जोड़ें' : 'Add Photo'}
                             </span>
                         </div>
@@ -176,9 +176,9 @@ export const DocumentUploadSection: React.FC<DocumentUploadSectionProps> = ({
 
                 {/* Upload Status */}
                 {uploading && (
-                    <div className="flex items-center justify-center gap-3 p-4 bg-orange-50 rounded-xl">
-                        <Loader2 className="h-5 w-5 animate-spin text-orange-600" />
-                        <span className="text-sm font-medium text-orange-700">
+                    <div className="flex items-center justify-center gap-3 p-4 bg-orange-50 dark:bg-orange-950/20 rounded-xl border border-orange-100 dark:border-orange-900/30">
+                        <Loader2 className="h-5 w-5 animate-spin text-orange-600 dark:text-orange-400" />
+                        <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
                             {isHindi ? 'अपलोड हो रहा है...' : 'Uploading...'}
                         </span>
                     </div>

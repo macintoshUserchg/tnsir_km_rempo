@@ -1,17 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
+import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL!,
-    ssl: { rejectUnauthorized: false },
-});
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
 
 const loginSchema = z.object({
     email: z.string().email(),
@@ -29,6 +20,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
             async authorize(credentials) {
                 try {
+                    console.log("[Auth] Attempting login for:", credentials?.email);
                     const { email, password } = loginSchema.parse(credentials);
 
                     const user = await prisma.user.findUnique({
@@ -36,14 +28,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     });
 
                     if (!user) {
+                        console.log("[Auth] User not found:", email);
                         return null;
                     }
 
                     const isValidPassword = await bcrypt.compare(password, user.password);
 
                     if (!isValidPassword) {
+                        console.log("[Auth] Invalid password for:", email);
                         return null;
                     }
+
+                    console.log("[Auth] Login successful for:", email);
 
                     return {
                         id: user.id.toString(),
@@ -52,7 +48,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         role: user.role,
                     };
                 } catch (error) {
-                    console.error("Auth error:", error);
+                    console.error("[Auth] Error in authorize:", error);
                     return null;
                 }
             },

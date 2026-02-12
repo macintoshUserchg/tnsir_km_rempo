@@ -11,7 +11,7 @@ export default function StatusPieChart({ data, locale }: StatusChartProps) {
     const isHindi = locale === 'hi';
 
     return (
-        <div className="h-64">
+        <div className="h-64 sm:h-72">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie
@@ -19,19 +19,31 @@ export default function StatusPieChart({ data, locale }: StatusChartProps) {
                         cx="50%"
                         cy="50%"
                         innerRadius={60}
-                        outerRadius={80}
+                        outerRadius={85}
                         paddingAngle={5}
                         dataKey="value"
                         label={({ name, percent }) => `${name} (${((percent ?? 0) * 100).toFixed(0)}%)`}
+                        stroke="none"
                     >
                         {data.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                     </Pie>
                     <Tooltip
+                        contentStyle={{
+                            backgroundColor: 'hsl(var(--card))',
+                            borderColor: 'hsl(var(--border))',
+                            borderRadius: '8px',
+                            color: 'hsl(var(--foreground))'
+                        }}
+                        itemStyle={{ color: 'hsl(var(--foreground))' }}
                         formatter={(value) => [value, isHindi ? 'आवेदन' : 'Applications']}
                     />
-                    <Legend />
+                    <Legend
+                        verticalAlign="bottom"
+                        height={36}
+                        wrapperStyle={{ paddingTop: '20px' }}
+                    />
                 </PieChart>
             </ResponsiveContainer>
         </div>

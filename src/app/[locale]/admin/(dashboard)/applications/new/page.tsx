@@ -20,10 +20,10 @@ export default async function NewApplicationPage({ params }: Props) {
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-2xl font-bold">
+                <h1 className="dashboard-title">
                     {isHindi ? 'नया आवेदन दर्ज करें' : 'Submit New Application'}
                 </h1>
-                <p className="text-gray-500">
+                <p className="dashboard-body mt-1">
                     {isHindi
                         ? 'आगंतुक की ओर से आवेदन जमा करें'
                         : 'Submit application on behalf of a visitor'}

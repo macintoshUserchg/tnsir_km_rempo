@@ -14,10 +14,10 @@ const ApplicationStatusBadge: React.FC<ApplicationStatusBadgeProps> = ({ status,
     const isHindi = locale === 'hi';
 
     const styles: Record<string, string> = {
-        PENDING: 'bg-amber-100 text-amber-700 ring-1 ring-amber-200',
-        IN_PROGRESS: 'bg-purple-100 text-purple-700 ring-1 ring-purple-200',
-        RESOLVED: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200',
-        REJECTED: 'bg-red-100 text-red-700 ring-1 ring-red-200',
+        PENDING: 'bg-amber-100 text-amber-700 ring-1 ring-amber-200 dark:bg-amber-950/30 dark:text-amber-500 dark:ring-amber-500/30',
+        IN_PROGRESS: 'bg-purple-100 text-purple-700 ring-1 ring-purple-200 dark:bg-purple-950/30 dark:text-purple-500 dark:ring-purple-500/30',
+        RESOLVED: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-500 dark:ring-emerald-500/30',
+        REJECTED: 'bg-red-100 text-red-700 ring-1 ring-red-200 dark:bg-red-950/30 dark:text-red-500 dark:ring-red-500/30',
     };
 
     const labels: Record<string, Record<string, string>> = {
@@ -41,7 +41,7 @@ const ApplicationStatusBadge: React.FC<ApplicationStatusBadgeProps> = ({ status,
 
     return (
         <span className={cn(
-            'px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap inline-block',
+            'dashboard-badge px-2.5 py-1 rounded-full whitespace-nowrap inline-block',
             style,
             className
         )}>
