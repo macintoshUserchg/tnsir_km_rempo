@@ -113,20 +113,20 @@ export default async function AdminDashboardPage({ params }: Props) {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
                 {stats.map((stat, index) => (
                     <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
                         <CardContent className="p-0">
                             <div className="flex items-stretch">
-                                <div className={`w-2 bg-gradient-to-b ${stat.gradient}`} />
-                                <div className="flex-1 p-5">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <span className="text-sm font-medium text-gray-500">{stat.title}</span>
-                                        <div className={`w-10 h-10 rounded-xl ${stat.bgLight} flex items-center justify-center`}>
-                                            <stat.icon className={`h-5 w-5 ${stat.textColor}`} />
+                                <div className={`w-1.5 sm:w-2 bg-gradient-to-b ${stat.gradient}`} />
+                                <div className="flex-1 p-3 sm:p-5">
+                                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                                        <span className="text-xs sm:text-sm font-medium text-gray-500 truncate mr-2">{stat.title}</span>
+                                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl ${stat.bgLight} flex items-center justify-center flex-shrink-0`}>
+                                            <stat.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.textColor}`} />
                                         </div>
                                     </div>
-                                    <div className="text-3xl font-bold text-gray-900">{stat.value.toLocaleString()}</div>
+                                    <div className="text-xl sm:text-3xl font-bold text-gray-900">{stat.value.toLocaleString()}</div>
                                 </div>
                             </div>
                         </CardContent>
@@ -135,30 +135,30 @@ export default async function AdminDashboardPage({ params }: Props) {
             </div>
 
             {/* Quick Stats Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-5">
                 {/* Rejected Count */}
                 <Card className="border-0 shadow-sm bg-gradient-to-br from-red-50 to-rose-50">
-                    <CardContent className="p-5 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center">
-                            <XCircle className="h-6 w-6 text-red-600" />
+                    <CardContent className="p-2 sm:p-5 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-start gap-1 sm:gap-4 text-center sm:text-left">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0 mb-1 sm:mb-0">
+                            <XCircle className="h-4 w-4 sm:h-6 sm:w-6 text-red-600" />
                         </div>
                         <div>
-                            <p className="text-sm text-gray-500">{isHindi ? 'अस्वीकृत आवेदन' : 'Rejected Applications'}</p>
-                            <p className="text-2xl font-bold text-gray-900">{rejectedApplications}</p>
+                            <p className="text-[10px] sm:text-sm text-gray-500 leading-tight">{isHindi ? 'अस्वीकृत' : 'Rejected'}</p>
+                            <p className="text-sm sm:text-2xl font-bold text-gray-900 leading-tight">{rejectedApplications}</p>
                         </div>
                     </CardContent>
                 </Card>
 
                 {/* Resolution Rate */}
                 <Card className="border-0 shadow-sm bg-gradient-to-br from-emerald-50 to-green-50">
-                    <CardContent className="p-5 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-                            <TrendingUp className="h-6 w-6 text-emerald-600" />
+                    <CardContent className="p-2 sm:p-5 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-start gap-1 sm:gap-4 text-center sm:text-left">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0 mb-1 sm:mb-0">
+                            <TrendingUp className="h-4 w-4 sm:h-6 sm:w-6 text-emerald-600" />
                         </div>
                         <div>
-                            <p className="text-sm text-gray-500">{isHindi ? 'समाधान दर' : 'Resolution Rate'}</p>
-                            <p className="text-2xl font-bold text-gray-900">
-                                {totalApplications > 0 ? ((resolvedApplications / totalApplications) * 100).toFixed(1) : 0}%
+                            <p className="text-[10px] sm:text-sm text-gray-500 leading-tight">{isHindi ? 'समाधान' : 'Resolved'}</p>
+                            <p className="text-sm sm:text-2xl font-bold text-gray-900 leading-tight">
+                                {totalApplications > 0 ? ((resolvedApplications / totalApplications) * 100).toFixed(0) : 0}%
                             </p>
                         </div>
                     </CardContent>
@@ -166,14 +166,14 @@ export default async function AdminDashboardPage({ params }: Props) {
 
                 {/* Pending Rate */}
                 <Card className="border-0 shadow-sm bg-gradient-to-br from-amber-50 to-yellow-50">
-                    <CardContent className="p-5 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
-                            <Clock className="h-6 w-6 text-amber-600" />
+                    <CardContent className="p-2 sm:p-5 flex flex-col sm:flex-row items-center sm:items-center justify-center sm:justify-start gap-1 sm:gap-4 text-center sm:text-left">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0 mb-1 sm:mb-0">
+                            <Clock className="h-4 w-4 sm:h-6 sm:w-6 text-amber-600" />
                         </div>
                         <div>
-                            <p className="text-sm text-gray-500">{isHindi ? 'लंबित दर' : 'Pending Rate'}</p>
-                            <p className="text-2xl font-bold text-gray-900">
-                                {totalApplications > 0 ? ((pendingApplications / totalApplications) * 100).toFixed(1) : 0}%
+                            <p className="text-[10px] sm:text-sm text-gray-500 leading-tight">{isHindi ? 'लंबित' : 'Pending'}</p>
+                            <p className="text-sm sm:text-2xl font-bold text-gray-900 leading-tight">
+                                {totalApplications > 0 ? ((pendingApplications / totalApplications) * 100).toFixed(0) : 0}%
                             </p>
                         </div>
                     </CardContent>
