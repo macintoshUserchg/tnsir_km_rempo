@@ -45,7 +45,7 @@ export const Hero: React.FC = () => {
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="text-white text-center lg:text-left"
+                        className="text-amber-950 text-center lg:text-left"
                     >
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
@@ -69,7 +69,7 @@ export const Hero: React.FC = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.6, duration: 0.6 }}
-                            className="text-lg md:text-xl lg:text-2xl mb-3 md:mb-4 text-white/90 font-medium"
+                            className="text-lg md:text-xl lg:text-2xl mb-3 md:mb-4 text-amber-900/90 font-medium"
                         >
                             {t('role')}
                         </motion.p>
@@ -78,7 +78,7 @@ export const Hero: React.FC = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.8, duration: 0.6 }}
-                            className="text-sm md:text-base lg:text-lg mb-6 md:mb-8 text-white/80 max-w-xl mx-auto lg:mx-0"
+                            className="text-sm md:text-base lg:text-lg mb-6 md:mb-8 text-amber-900/80 max-w-xl mx-auto lg:mx-0"
                         >
                             {t('description')}
                         </motion.p>

@@ -60,7 +60,7 @@ export const HeroBlock: React.FC<HeroBlockProps> = ({ content, locale }) => {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="text-white text-center lg:text-left"
+                        className="text-amber-950 text-center lg:text-left"
                     >
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}
@@ -79,7 +79,7 @@ export const HeroBlock: React.FC<HeroBlockProps> = ({ content, locale }) => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.4, duration: 0.6 }}
-                                className="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 text-white/90 font-medium"
+                                className="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 text-amber-900/90 font-medium"
                                 style={{ fontSize: 'var(--site-hero-desc-size)' }}
                             >
                                 {description}
