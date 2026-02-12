@@ -104,68 +104,70 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
             </div>
 
             {/* Applications Grid/List */}
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {applications.length > 0 ? (
                     applications.map((app) => (
-                        <Link key={app.id} href={`/admin/applications/${app.id}`}>
-                            <Card className="border-0 shadow-sm hover:shadow-md transition-all cursor-pointer group">
-                                <CardContent className="p-0">
-                                    <div className="flex items-center">
-                                        {/* Left Color Bar */}
-                                        <div className={`w-1.5 self-stretch rounded-l-xl ${app.status === 'PENDING' ? 'bg-amber-500' :
-                                            app.status === 'IN_PROGRESS' ? 'bg-purple-500' :
-                                                app.status === 'RESOLVED' ? 'bg-emerald-500' :
-                                                    'bg-red-500'
-                                            }`} />
-
-                                        <div className="flex-1 p-5 flex items-center justify-between gap-4">
-                                            <div className="flex items-center gap-4">
-                                                {/* Avatar */}
-                                                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                                    <User className="h-5 w-5 text-gray-500" />
-                                                </div>
-
-                                                {/* Info */}
-                                                <div className="min-w-0">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <h3 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors truncate">
-                                                            {app.name}
-                                                        </h3>
-                                                        <span className="text-xs font-mono text-gray-400 bg-gray-100 px-2 py-0.5 rounded">
-                                                            {app.cNumber}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                                                        <span className="flex items-center gap-1">
-                                                            <Phone className="h-3.5 w-3.5" />
-                                                            {app.mobile}
-                                                        </span>
-                                                        <span className="flex items-center gap-1">
-                                                            <MapPin className="h-3.5 w-3.5" />
-                                                            {isHindi ? app.vidhansabha.nameHi : (app.vidhansabha.nameEn || app.vidhansabha.nameHi)}
-                                                        </span>
-                                                        <span className="hidden sm:inline-flex items-center gap-1">
-                                                            <FileText className="h-3.5 w-3.5" />
-                                                            {isHindi ? app.workType.nameHi : (app.workType.nameEn || app.workType.nameHi)}
-                                                        </span>
-                                                    </div>
-                                                </div>
+                        <Link key={app.id} href={`/admin/applications/${app.id}`} className="block h-full">
+                            <Card className="border-0 shadow-sm hover:shadow-lg transition-all duration-200 cursor-pointer group h-full flex flex-col overflow-hidden relative">
+                                {/* Status Accent Bar */}
+                                <div className={`absolute top-0 left-0 bottom-0 w-1 ${app.status === 'PENDING' ? 'bg-amber-500' :
+                                    app.status === 'IN_PROGRESS' ? 'bg-purple-500' :
+                                        app.status === 'RESOLVED' ? 'bg-emerald-500' :
+                                            'bg-red-500'
+                                    }`} />
+                                <CardContent className="p-5 pl-7 flex flex-col h-full">
+                                    {/* Header */}
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-1">
+                                                    {app.name}
+                                                </h3>
+                                                <span className="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                                                    {app.cNumber}
+                                                </span>
                                             </div>
-
-                                            {/* Right Side */}
-                                            <div className="flex items-center gap-4 flex-shrink-0">
-                                                <div className="text-right">
-                                                    <ApplicationStatusBadge status={app.status} locale={locale} />
-                                                    <p className="text-xs text-gray-400 mt-1.5">
-                                                        {new Date(app.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-IN', {
-                                                            day: 'numeric',
-                                                            month: 'short',
-                                                            year: 'numeric',
-                                                        })}
-                                                    </p>
-                                                </div>
-                                                <Eye className="h-5 w-5 text-gray-300 group-hover:text-orange-500 transition-colors" />
+                                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                <Phone className="h-3.5 w-3.5" />
+                                                <span>{app.mobile}</span>
                                             </div>
+                                        </div>
+                                        <ApplicationStatusBadge status={app.status} locale={locale} />
+                                    </div>
+
+                                    {/* Details Grid */}
+                                    <div className="grid grid-cols-2 gap-3 mb-5 bg-gray-50/50 p-3 rounded-lg border border-gray-100">
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">{isHindi ? 'विधानसभा' : 'Vidhansabha'}</span>
+                                            <div className="flex items-center gap-1.5 text-sm font-medium text-gray-700">
+                                                <MapPin className="h-3.5 w-3.5 text-gray-400" />
+                                                <span className="truncate">{isHindi ? app.vidhansabha.nameHi : (app.vidhansabha.nameEn || app.vidhansabha.nameHi)}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">{isHindi ? 'कार्य प्रकार' : 'Work Type'}</span>
+                                            <div className="flex items-center gap-1.5 text-sm font-medium text-gray-700">
+                                                <FileText className="h-3.5 w-3.5 text-gray-400" />
+                                                <span className="truncate">{isHindi ? app.workType.nameHi : (app.workType.nameEn || app.workType.nameHi)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Footer */}
+                                    <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                                        <div className="text-xs text-gray-400 font-medium flex items-center gap-1.5">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+                                            {new Date(app.createdAt).toLocaleDateString(isHindi ? 'hi-IN' : 'en-IN', {
+                                                day: 'numeric',
+                                                month: 'short',
+                                                year: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
+                                        </div>
+                                        <div className="text-sm font-medium text-orange-600 flex items-center gap-1 group-hover:gap-2 transition-all">
+                                            {isHindi ? 'विवरण देखें' : 'View Details'}
+                                            <ChevronRight className="h-4 w-4" />
                                         </div>
                                     </div>
                                 </CardContent>
@@ -173,19 +175,21 @@ export default async function ApplicationsPage({ params, searchParams }: Props) 
                         </Link>
                     ))
                 ) : (
-                    <Card className="border-0 shadow-sm">
-                        <CardContent className="py-16 text-center">
-                            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-                                <FileText className="h-8 w-8 text-gray-400" />
-                            </div>
-                            <p className="text-gray-500 font-medium">
-                                {isHindi ? 'कोई आवेदन नहीं मिला' : 'No applications found'}
-                            </p>
-                            <p className="text-sm text-gray-400 mt-1">
-                                {isHindi ? 'इस फ़िल्टर के लिए कोई आवेदन नहीं है' : 'There are no applications for this filter'}
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <div className="col-span-full">
+                        <Card className="border-0 shadow-sm border-dashed border-2 border-gray-200">
+                            <CardContent className="py-16 text-center">
+                                <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mx-auto mb-4">
+                                    <Search className="h-8 w-8 text-gray-400" />
+                                </div>
+                                <h3 className="text-lg font-medium text-gray-900 mb-1">
+                                    {isHindi ? 'कोई आवेदन नहीं मिला' : 'No Applications Found'}
+                                </h3>
+                                <p className="text-gray-500 text-sm max-w-sm mx-auto">
+                                    {isHindi ? 'वर्तमान फ़िल्टर के साथ कोई परिणाम नहीं मिला। कृपया फ़िल्टर बदलें या नया आवेदन जोड़ें।' : 'No results found matching your current filters. Try adjusting filters or add a new application.'}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </div>
                 )}
             </div>
 
