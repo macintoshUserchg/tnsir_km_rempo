@@ -147,7 +147,7 @@ const SidebarContent = ({ locale, user, onNavigate }: SidebarProps) => {
 
 export default function AdminSidebar(props: SidebarProps) {
     return (
-        <aside className={cn("w-64 border-r border-gray-200 hidden md:flex flex-col h-screen sticky top-0", props.className)}>
+        <aside className={cn("w-72 border-r border-gray-200 hidden md:flex flex-col h-screen sticky top-0", props.className)}>
             <SidebarContent {...props} />
         </aside>
     );

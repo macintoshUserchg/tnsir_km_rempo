@@ -37,7 +37,7 @@ export default async function AdminLayout({ children, params }: Props) {
                 key={locale}
                 locale={locale}
                 user={session.user}
-                className="hidden md:flex flex-col w-64 border-r border-gray-200 bg-white h-screen sticky top-0 shrink-0"
+                className="hidden md:flex flex-col w-72 border-r border-gray-200 bg-white h-screen sticky top-0 shrink-0"
             />
 
             <main className="flex-1 p-4 md:p-8 overflow-auto w-full max-w-7xl mx-auto">
