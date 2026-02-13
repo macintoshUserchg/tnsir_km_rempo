@@ -44,8 +44,9 @@ export default function AlbumManager({ album, locale }: AlbumManagerProps) {
     const [currentPhoto, setCurrentPhoto] = useState<Partial<Photo>>({});
 
     // Upload State
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState({ current: 0, total: 0 });
 
     // Edit Album State
     const [isEditAlbumDialogOpen, setIsEditAlbumDialogOpen] = useState(false);
@@ -97,37 +98,61 @@ export default function AlbumManager({ album, locale }: AlbumManagerProps) {
     };
 
     const handleUpload = async () => {
-        if (!selectedFile) return;
+        if (selectedFiles.length === 0) return;
         setUploading(true);
-        try {
-            const imageUrl = await uploadToCloudinary(selectedFile);
+        setUploadProgress({ current: 0, total: selectedFiles.length });
 
-            // Save to DB
-            const res = await fetch('/api/admin/media/photos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    albumId: currentAlbum.id,
-                    imageUrl,
-                    captionHi: currentPhoto.captionHi,
-                    captionEn: currentPhoto.captionEn
-                })
-            });
+        let successCount = 0;
+        let failCount = 0;
 
-            if (!res.ok) throw new Error('Failed to save photo');
-            const newPhoto = await res.json();
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            setUploadProgress(prev => ({ ...prev, current: i + 1 }));
 
-            setPhotos(prev => [newPhoto, ...prev]);
-            toast.success(isHindi ? 'फोटो अपलोड की गई' : 'Photo uploaded successfully');
-            setIsUploadDialogOpen(false);
-            setSelectedFile(null);
-            setCurrentPhoto({});
-        } catch (error) {
-            console.error(error);
-            toast.error(isHindi ? 'अपलोड विफल' : 'Upload failed');
-        } finally {
-            setUploading(false);
+            try {
+                const imageUrl = await uploadToCloudinary(file);
+
+                // Save to DB
+                const res = await fetch('/api/admin/media/photos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        albumId: currentAlbum.id,
+                        imageUrl,
+                        captionHi: i === 0 ? currentPhoto.captionHi : '', // Only apply caption to first if multiple
+                        captionEn: i === 0 ? currentPhoto.captionEn : ''
+                    })
+                });
+
+                if (!res.ok) throw new Error('Failed to save photo');
+                const newPhoto = await res.json();
+
+                setPhotos(prev => [newPhoto, ...prev]);
+                successCount++;
+            } catch (error) {
+                console.error(`Error uploading file ${file.name}:`, error);
+                failCount++;
+            }
         }
+
+        if (successCount > 0) {
+            toast.success(isHindi
+                ? `${successCount} फोटो सफलतापूर्वक अपलोड की गईं`
+                : `${successCount} photos uploaded successfully`
+            );
+        }
+
+        if (failCount > 0) {
+            toast.error(isHindi
+                ? `${failCount} फोटो अपलोड करने में विफल`
+                : `${failCount} photos failed to upload`
+            );
+        }
+
+        setIsUploadDialogOpen(false);
+        setSelectedFiles([]);
+        setCurrentPhoto({});
+        setUploading(false);
     };
 
     const handleSavePhoto = async () => {
@@ -236,7 +261,7 @@ export default function AlbumManager({ album, locale }: AlbumManagerProps) {
                         <Edit className="mr-2 h-4 w-4" />
                         {isHindi ? 'संपादित करें' : 'Edit Details'}
                     </Button>
-                    <Button onClick={() => { setCurrentPhoto({}); setSelectedFile(null); setIsUploadDialogOpen(true); }} className="bg-orange-600 hover:bg-orange-700 text-white">
+                    <Button onClick={() => { setCurrentPhoto({}); setSelectedFiles([]); setIsUploadDialogOpen(true); }} className="bg-orange-600 hover:bg-orange-700 text-white">
                         <Upload className="mr-2 h-4 w-4" />
                         {isHindi ? 'फोटो जोड़ें' : 'Add Photos'}
                     </Button>
@@ -322,13 +347,32 @@ export default function AlbumManager({ album, locale }: AlbumManagerProps) {
                     </DialogHeader>
                     <div className="space-y-4 py-4">
                         <div className="space-y-2">
-                            <Label>{isHindi ? 'फाइल चुनें' : 'Select File'} <span className="text-red-500">*</span></Label>
+                            <Label>{isHindi ? 'फाइलें चुनें' : 'Select Files'} <span className="text-red-500">*</span></Label>
                             <Input
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                                multiple
+                                onChange={(e) => setSelectedFiles(Array.from(e.target.files || []))}
                             />
+                            {selectedFiles.length > 0 && (
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    {selectedFiles.length} {isHindi ? 'फाइलें चुनी गईं' : 'files selected'}
+                                </p>
+                            )}
                         </div>
+                        {uploading && selectedFiles.length > 1 && (
+                            <div className="space-y-2">
+                                <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-orange-600 transition-all duration-300"
+                                        style={{ width: `${(uploadProgress.current / uploadProgress.total) * 100}%` }}
+                                    />
+                                </div>
+                                <p className="text-xs text-center text-muted-foreground">
+                                    {isHindi ? 'अपलोड हो रहा है' : 'Uploading'} {uploadProgress.current} / {uploadProgress.total}
+                                </p>
+                            </div>
+                        )}
                         <div className="space-y-2">
                             <Label>{isHindi ? 'कैप्शन (हिंदी)' : 'Caption (Hindi)'}</Label>
                             <NewReactTransliterate
@@ -350,9 +394,14 @@ export default function AlbumManager({ album, locale }: AlbumManagerProps) {
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)}>{isHindi ? 'रद्द करें' : 'Cancel'}</Button>
-                        <Button onClick={handleUpload} disabled={uploading || !selectedFile} className="bg-orange-600 hover:bg-orange-700 text-white">
-                            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : (isHindi ? 'अपलोड करें' : 'Upload')}
+                        <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)} disabled={uploading}>{isHindi ? 'रद्द करें' : 'Cancel'}</Button>
+                        <Button onClick={handleUpload} disabled={uploading || selectedFiles.length === 0} className="bg-orange-600 hover:bg-orange-700 text-white">
+                            {uploading ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                    {selectedFiles.length > 1 ? `${uploadProgress.current}/${uploadProgress.total}` : (isHindi ? 'अपलोड हो रहा है...' : 'Uploading...')}
+                                </>
+                            ) : (isHindi ? 'अपलोड करें' : 'Upload')}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

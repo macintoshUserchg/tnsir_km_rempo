@@ -156,39 +156,16 @@ model BlogPost {
   slug        String    @unique
   titleHi     String    @map("title_hi")
   titleEn     String?   @map("title_en")
-  excerptHi   String?   @map("excerpt_hi") @db.Text
-  excerptEn   String?   @map("excerpt_en") @db.Text
   contentHi   String    @map("content_hi") @db.Text
   contentEn   String?   @map("content_en") @db.Text
-  imageUrl    String?   @map("image_url") // Main featured image
+  imageUrl    String?   @map("image_url")
   author      String    @default("Admin")
   published   Boolean   @default(false)
   publishedAt DateTime? @map("published_at")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
-  attachments BlogAttachment[]
-
   @@map("blog_posts")
-}
-
-model BlogAttachment {
-  id         Int            @id @default(autoincrement())
-  blogPostId Int            @map("blog_post_id")
-  blogPost   BlogPost       @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
-  url        String
-  titleHi    String?        @map("title_hi")
-  titleEn    String?        @map("title_en")
-  type       AttachmentType
-  createdAt  DateTime       @default(now()) @map("created_at")
-
-  @@map("blog_attachments")
-}
-
-enum AttachmentType {
-  IMAGE
-  VIDEO
-  PDF
 }
 
 model TimelineEvent {

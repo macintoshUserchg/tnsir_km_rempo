@@ -7,13 +7,18 @@ import { galleryImages } from '@/data/gallery';
 import { useLocale } from 'next-intl';
 import { motion } from 'framer-motion';
 import { ArrowRight, Images } from 'lucide-react';
+import { GalleryImage } from '@/types';
 
-export function GalleryPreview() {
+interface GalleryPreviewProps {
+    images?: GalleryImage[];
+}
+
+export function GalleryPreview({ images }: GalleryPreviewProps) {
     const locale = useLocale();
     const isHindi = locale === 'hi';
 
-    // Show all images, first 6 visible, rest scrollable
-    const allImages = galleryImages;
+    // Show provided images or fallback to static data
+    const allImages = images || (galleryImages as unknown as GalleryImage[]);
 
     return (
         <section className="py-4 md:py-6 bg-gray-50">
@@ -47,7 +52,7 @@ export function GalleryPreview() {
                     {/* Gallery Grid - 5 columns, 3 rows (15 images) */}
                     <div className="relative p-3 md:p-4">
                         <div className="grid grid-cols-3 md:grid-cols-5 gap-2 md:gap-3">
-                            {allImages.slice(0, 10).map((image, index) => (
+                            {allImages.slice(0, 15).map((image: GalleryImage, index: number) => (
                                 <motion.div
                                     key={image.id}
                                     className="relative overflow-hidden rounded-lg md:rounded-xl bg-gray-100 aspect-square group cursor-pointer shadow-sm hover:shadow-lg transition-all"

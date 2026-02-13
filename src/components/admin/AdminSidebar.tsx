@@ -16,7 +16,8 @@ import {
     Video,
     Menu,
     Sun,
-    Moon
+    Moon,
+    Image
 } from 'lucide-react';
 import {
     Sheet,
@@ -74,11 +75,6 @@ const SidebarContent = ({ locale, user, onNavigate }: SidebarProps) => {
             label: isHindi ? 'रिपोर्ट' : 'Reports'
         },
         {
-            href: '/admin/videos',
-            icon: Video,
-            label: isHindi ? 'वीडियो' : 'Videos'
-        },
-        {
             href: '/admin/pages',
             icon: FileText,
             label: isHindi ? 'पेज' : 'Pages'
@@ -87,6 +83,11 @@ const SidebarContent = ({ locale, user, onNavigate }: SidebarProps) => {
             href: '/admin/menus',
             icon: Menu,
             label: isHindi ? 'नेविगेशन' : 'Navigation'
+        },
+        {
+            href: '/admin/media',
+            icon: Image,
+            label: isHindi ? 'मीडिया' : 'Media Center'
         },
     ];
 

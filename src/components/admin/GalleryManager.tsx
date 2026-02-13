@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Loader2, Plus, Edit, Trash2, Image as ImageIcon, Search } from 'lucide-react';
+import { Loader2, Plus, Edit, Trash2, Image as ImageIcon, Search, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { NewReactTransliterate } from 'new-react-transliterate';
 import { Link } from '@/i18n/navigation';
@@ -32,6 +32,60 @@ export default function GalleryManager({ locale }: GalleryManagerProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [currentAlbum, setCurrentAlbum] = useState<Partial<Album>>({});
     const [saving, setSaving] = useState(false);
+    const [uploadingCover, setUploadingCover] = useState(false);
+
+    // -- Cloudinary Upload Logic --
+    const uploadToCloudinary = async (file: File): Promise<string> => {
+        const timestamp = Math.round(new Date().getTime() / 1000);
+        const folder = 'tnsir_km/gallery';
+        const upload_preset = 'km_app';
+
+        const signRes = await fetch('/api/sign-cloudinary', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                paramsToSign: {
+                    timestamp,
+                    folder,
+                    upload_preset,
+                }
+            })
+        });
+
+        if (!signRes.ok) throw new Error('Failed to get upload signature');
+        const { signature, cloudName, apiKey } = await signRes.json();
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('api_key', apiKey);
+        formData.append('timestamp', timestamp.toString());
+        formData.append('signature', signature);
+        formData.append('folder', folder);
+        formData.append('upload_preset', upload_preset);
+
+        const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!uploadRes.ok) throw new Error('Cloudinary upload failed');
+        const data = await uploadRes.json();
+        return data.secure_url;
+    };
+
+    const handleCoverUpload = async (file: File) => {
+        setUploadingCover(true);
+        try {
+            const url = await uploadToCloudinary(file);
+            setCurrentAlbum(prev => ({ ...prev, coverImage: url }));
+            toast.success(isHindi ? 'कवर इमेज अपलोड की गई' : 'Cover image uploaded');
+        } catch (error) {
+            console.error(error);
+            toast.error(isHindi ? 'कवर अपलोड विफल' : 'Cover upload failed');
+        } finally {
+            setUploadingCover(false);
+        }
+    };
 
     const fetchAlbums = async () => {
         setLoading(true);
@@ -211,14 +265,67 @@ export default function GalleryManager({ locale }: GalleryManagerProps) {
                                 placeholder="Details about this album..."
                             />
                         </div>
-                        {/* Cover Image Upload (Simplified for now, will use generic Input) */}
-                        <div className="space-y-2">
-                            <Label>{isHindi ? 'कवर छवि URL' : 'Cover Image URL'}</Label>
-                            <Input
-                                value={currentAlbum.coverImage || ''}
-                                onChange={(e) => setCurrentAlbum(prev => ({ ...prev, coverImage: e.target.value }))}
-                                placeholder="https://..."
-                            />
+                        {/* Cover Image Upload */}
+                        <div className="space-y-3">
+                            <Label>{isHindi ? 'कवर छवि' : 'Cover Image'}</Label>
+
+                            {currentAlbum.coverImage && (
+                                <div className="relative aspect-video w-full max-h-40 bg-muted rounded-lg overflow-hidden border border-border">
+                                    <img
+                                        src={currentAlbum.coverImage}
+                                        alt="Cover Preview"
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <Button
+                                        variant="destructive"
+                                        size="icon"
+                                        className="absolute top-2 right-2 h-7 w-7"
+                                        onClick={() => setCurrentAlbum(prev => ({ ...prev, coverImage: null }))}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            )}
+
+                            <div className="flex gap-2">
+                                <Input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    id="cover-upload"
+                                    onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) handleCoverUpload(file);
+                                    }}
+                                    disabled={uploadingCover}
+                                />
+                                <Label
+                                    htmlFor="cover-upload"
+                                    className="flex-1 border-2 border-dashed border-border rounded-lg p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-muted/50 transition-colors"
+                                >
+                                    {uploadingCover ? (
+                                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                                    ) : (
+                                        <>
+                                            <Upload className="h-6 w-6 text-muted-foreground" />
+                                            <span className="text-xs text-muted-foreground">
+                                                {isHindi ? 'अपलोड करने के लिए क्लिक करें' : 'Click to upload cover'}
+                                            </span>
+                                        </>
+                                    )}
+                                </Label>
+                                <div className="flex-1 space-y-2">
+                                    <p className="text-[10px] text-muted-foreground uppercase font-bold px-1">
+                                        {isHindi ? 'या URL डालें' : 'OR PASTE URL'}
+                                    </p>
+                                    <Input
+                                        value={currentAlbum.coverImage || ''}
+                                        onChange={(e) => setCurrentAlbum(prev => ({ ...prev, coverImage: e.target.value }))}
+                                        placeholder="https://..."
+                                        className="h-12"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <DialogFooter>

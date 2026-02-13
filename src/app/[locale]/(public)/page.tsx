@@ -30,13 +30,30 @@ export default async function HomePage({ params }: Props) {
         return acc;
     }, {} as Record<string, string>);
 
+    // Fetch latest gallery photos
+    const photos = await prisma.galleryPhoto.findMany({
+        take: 15,
+        orderBy: { createdAt: 'desc' },
+        include: { album: true }
+    });
+
+    const galleryImagesData = photos.map(photo => ({
+        id: photo.id.toString(),
+        url: photo.imageUrl,
+        thumbnail: photo.imageUrl,
+        title: (locale === 'hi' ? photo.captionHi : photo.captionEn) || photo.album.titleEn || '',
+        titleHi: photo.captionHi || photo.album.titleHi || '',
+        category: 'political-events' as const, // Default fallback
+        date: photo.createdAt.toISOString(),
+    }));
+
     return (
         <>
             <TypographySync slug="home" locale={locale} />
             <Hero />
             <BiographyPreview />
             <TimelinePreview locale={locale} />
-            <GalleryPreview />
+            <GalleryPreview images={galleryImagesData} />
             <Newsletter
                 facebookEmbed={socialSettings['social_facebook_embed']}
                 twitterEmbed={socialSettings['social_twitter_embed']}
