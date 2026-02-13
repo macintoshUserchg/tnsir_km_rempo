@@ -15,6 +15,12 @@ interface VideosBlockProps {
     locale: string;
 }
 
+function getYoutubeId(url: string): string {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : '';
+}
+
 export const VideosBlock = async ({ content, locale }: VideosBlockProps) => {
     const isHindi = locale === 'hi';
     const videosRaw = await prisma.video.findMany({
@@ -28,9 +34,10 @@ export const VideosBlock = async ({ content, locale }: VideosBlockProps) => {
         description: '',
         date: video.createdAt.toISOString(),
         url: video.videoUrl,
-        youtubeId: video.videoUrl.split('v=')[1] || '',
+        thumbnailUrl: video.thumbnailUrl,
+        youtubeId: getYoutubeId(video.videoUrl),
         category: '',
-        source: 'YouTube',
+        source: getYoutubeId(video.videoUrl) ? 'YouTube' : 'Direct',
         sourceUrl: video.videoUrl
     }));
 

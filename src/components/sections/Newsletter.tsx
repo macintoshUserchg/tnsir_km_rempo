@@ -4,23 +4,36 @@ import React, { useEffect } from 'react';
 import { Share2, Facebook, Twitter } from 'lucide-react';
 import { Container } from '@/components/common/Container';
 
-export const Newsletter: React.FC = () => {
-    useEffect(() => {
-        // Load Twitter widgets script after component mounts (client-side only)
-        const script = document.createElement('script');
-        script.src = 'https://platform.twitter.com/widgets.js';
-        script.async = true;
-        script.charset = 'utf-8';
-        document.body.appendChild(script);
+interface NewsletterProps {
+    facebookEmbed?: string;
+    twitterEmbed?: string;
+}
 
-        return () => {
-            // Cleanup script on unmount
-            const existingScript = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
-            if (existingScript) {
-                existingScript.remove();
+export const Newsletter: React.FC<NewsletterProps> = ({ facebookEmbed, twitterEmbed }) => {
+    useEffect(() => {
+        // Function to load and initialize Twitter widgets
+        const loadTwitterWidgets = () => {
+            if ((window as any).twttr && (window as any).twttr.widgets) {
+                (window as any).twttr.widgets.load();
+            } else {
+                const script = document.createElement('script');
+                script.src = 'https://platform.twitter.com/widgets.js';
+                script.async = true;
+                script.charset = 'utf-8';
+                document.body.appendChild(script);
             }
         };
-    }, []);
+
+        loadTwitterWidgets();
+
+        // Optional: Re-run on some interval or keep checking if script is loaded
+        // but loadTwitterWidgets() should be enough if called after mount
+    }, [twitterEmbed]);
+
+    // Default values if not provided
+    const fbSrc = facebookEmbed || "https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fkirlodiofficial&tabs=timeline&width=500&height=300&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true";
+    const twitterHref = twitterEmbed || "https://twitter.com/KirodiLalMeena";
+    const twitterUsername = twitterHref.split('/').pop() || 'KirodiLalMeena';
 
     return (
         <section className="py-6 md:py-10 bg-white">
@@ -43,7 +56,7 @@ export const Newsletter: React.FC = () => {
                         </div>
                         <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                             <iframe
-                                src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fkirlodiofficial&tabs=timeline&width=500&height=300&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true"
+                                src={fbSrc}
                                 width="100%"
                                 height="300"
                                 style={{ border: 'none', overflow: 'hidden' }}
@@ -65,12 +78,13 @@ export const Newsletter: React.FC = () => {
                         </div>
                         <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm h-[300px]">
                             <a
+                                key={twitterHref}
                                 className="twitter-timeline"
                                 data-height="300"
                                 data-theme="light"
-                                href="https://twitter.com/KirodiLalMeena"
+                                href={twitterHref}
                             >
-                                Tweets by @KirodiLalMeena
+                                Tweets by @{twitterUsername}
                             </a>
                         </div>
                     </div>

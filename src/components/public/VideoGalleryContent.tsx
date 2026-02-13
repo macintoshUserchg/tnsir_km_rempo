@@ -13,6 +13,7 @@ interface Video {
     date: string;
     url: string;
     youtubeId: string;
+    thumbnailUrl?: string | null;
     category?: string;
     source?: string;
     sourceUrl?: string;
@@ -66,16 +67,28 @@ export default function VideoGalleryContent({
                     <StaggerContainer className="grid gap-8 lg:grid-cols-2">
                         {videos.map((video) => (
                             <StaggerItem key={video.id}>
-                                <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
-                                    <div className="aspect-video bg-gray-100 relative group">
-                                        <iframe
-                                            src={`https://www.youtube.com/embed/${video.youtubeId}`}
-                                            title={video.title}
-                                            className="w-full h-full"
-                                            loading="lazy"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                        />
+                                <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1 group">
+                                    <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                                        {video.youtubeId ? (
+                                            <iframe
+                                                src={`https://www.youtube.com/embed/${video.youtubeId}`}
+                                                title={video.title}
+                                                className="w-full h-full"
+                                                loading="lazy"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                            />
+                                        ) : (
+                                            <video
+                                                src={video.url}
+                                                controls
+                                                preload="metadata"
+                                                className="w-full h-full object-cover"
+                                                poster={video.thumbnailUrl || undefined}
+                                            >
+                                                {isHindi ? 'आपका ब्राउज़र वीडियो टैग का समर्थन नहीं करता है।' : 'Your browser does not support the video tag.'}
+                                            </video>
+                                        )}
                                     </div>
                                     <div className="p-6">
                                         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 mb-3">
@@ -86,7 +99,7 @@ export default function VideoGalleryContent({
                                             )}
                                             <span>{formatDate(video.date)}</span>
                                         </div>
-                                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
                                             {video.title}
                                         </h3>
                                         {video.description && (

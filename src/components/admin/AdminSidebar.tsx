@@ -13,7 +13,7 @@ import {
     BarChart3,
     Settings,
     LogOut,
-    PlusCircle,
+    Video,
     Menu,
     Sun,
     Moon
@@ -54,12 +54,6 @@ const SidebarContent = ({ locale, user, onNavigate }: SidebarProps) => {
             label: isHindi ? 'डैशबोर्ड' : 'Dashboard'
         },
         {
-            href: '/admin/applications/new',
-            icon: PlusCircle,
-            label: isHindi ? 'नया आवेदन' : 'New Application',
-            highlight: true
-        },
-        {
             href: '/admin/applications',
             icon: FileText,
             label: isHindi ? 'आवेदन' : 'Applications'
@@ -78,6 +72,11 @@ const SidebarContent = ({ locale, user, onNavigate }: SidebarProps) => {
             href: '/admin/reports',
             icon: BarChart3,
             label: isHindi ? 'रिपोर्ट' : 'Reports'
+        },
+        {
+            href: '/admin/videos',
+            icon: Video,
+            label: isHindi ? 'वीडियो' : 'Videos'
         },
         {
             href: '/admin/pages',

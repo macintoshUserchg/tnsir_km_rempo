@@ -162,6 +162,49 @@ export default function SettingsForm({ locale, initialSettings }: SettingsFormPr
                     </Card>
                 </TabsContent>
 
+                {/* Social Settings */}
+                <TabsContent value="social" className="space-y-4 mt-6">
+                    <Card className="dashboard-card border-0">
+                        <CardHeader className="border-b border-border bg-muted/30 pb-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
+                                    <Share2 className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+                                </div>
+                                <div>
+                                    <CardTitle className="dashboard-section">{isHindi ? 'सोशल मीडिया फीड' : 'Social Media Feed'}</CardTitle>
+                                    <CardDescription className="dashboard-label">{isHindi ? 'होमपेज पर फेसबुक और ट्विटर फीड लिंक करें' : 'Link Facebook and Twitter feeds on homepage'}</CardDescription>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-6 space-y-4">
+                            <div className="space-y-2">
+                                <Label className="dashboard-label">{isHindi ? 'फेसबुक प्लगइन URL' : 'Facebook Plugin URL'}</Label>
+                                <Input
+                                    value={settings['social_facebook_embed'] || ''}
+                                    onChange={(e) => handleChange('social_facebook_embed', e.target.value)}
+                                    placeholder="https://www.facebook.com/plugins/page.php?href=..."
+                                    className="h-10 bg-background border-border"
+                                />
+                                <p className="text-[10px] text-muted-foreground italic">
+                                    {isHindi ? 'फेसबुक पेज प्लगइन का पूरा iframe src URL यहां डालें।' : 'Paste the full iframe src URL from Facebook Page Plugin here.'}
+                                </p>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="dashboard-label">{isHindi ? 'ट्विटर/X प्रोफाइल URL' : 'Twitter/X Profile URL'}</Label>
+                                <Input
+                                    value={settings['social_twitter_embed'] || ''}
+                                    onChange={(e) => handleChange('social_twitter_embed', e.target.value)}
+                                    placeholder="https://twitter.com/YourUsername"
+                                    className="h-10 bg-background border-border"
+                                />
+                                <p className="text-[10px] text-muted-foreground italic">
+                                    {isHindi ? 'वह ट्विटर प्रोफाइल लिंक डालें जिसे आप अपनी टाइमलाइन पर दिखाना चाहते हैं।' : 'Enter the Twitter profile link you want to display on your timeline.'}
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
                 {/* Typography Settings */}
                 <TabsContent value="typography" className="space-y-4 mt-6">
                     <Card className="dashboard-card border-0">

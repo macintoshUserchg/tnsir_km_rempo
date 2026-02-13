@@ -12,8 +12,15 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { paramsToSign } = body;
 
+    console.log('Signing parameters:', paramsToSign);
+
+    // Filter out undefined/null values but keep zero
+    const cleanParams = Object.fromEntries(
+        Object.entries(paramsToSign).filter(([_, v]) => v !== undefined && v !== null)
+    );
+
     const signature = cloudinary.utils.api_sign_request(
-        paramsToSign,
+        cleanParams,
         process.env.CLOUDINARY_API_SECRET as string
     );
 

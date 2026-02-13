@@ -15,7 +15,10 @@ function getYoutubeId(url: string): string {
 
 async function getVideos(isHindi: boolean) {
     const videos = await prisma.video.findMany({
-        orderBy: { createdAt: 'desc' }
+        orderBy: [
+            { order: 'asc' },
+            { createdAt: 'desc' }
+        ]
     });
 
     return videos.map(video => ({
@@ -24,6 +27,7 @@ async function getVideos(isHindi: boolean) {
         description: '', // Video model does not have description
         date: video.createdAt.toISOString(),
         url: video.videoUrl,
+        thumbnailUrl: video.thumbnailUrl,
         youtubeId: getYoutubeId(video.videoUrl),
         // DB doesn't have category/source yet, using defaults or optional
         category: 'Speeches', // Default category for now
