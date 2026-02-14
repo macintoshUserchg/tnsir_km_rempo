@@ -59,6 +59,17 @@
         "place": "स्थान",
         "education": "शिक्षा"
     },
+    "movements": {
+        "title": "प्रमुख आंदोलन",
+        "subtitle": "डॉ. किरोड़ी लाल मीणा के संघर्षों और जन आंदोलनों की ऐतिहासिक यात्रा",
+        "batch": "बैच",
+        "loadMore": "अधिक भार",
+        "yearRange": "वर्ष सीमा",
+        "totalMovements": "कुल आंदोलन",
+        "viewBatch": "बैच देखें",
+        "nextBatch": "अगला बैच",
+        "prevBatch": "पिछला बैच"
+    },
     "photoGalleryPage": {
         "title": "फोटो गैलरी",
         "subtitle": "सार्वजनिक सेवा और कार्यक्रमों की झलकियां"

@@ -1,0 +1,1 @@
+import prisma from '../src/lib/db'; async function main() { const items = await prisma.menu.findMany({ where: { position: 'HEADER' }, orderBy: { order: 'asc' } }); console.log(JSON.stringify(items, null, 2)); } main();

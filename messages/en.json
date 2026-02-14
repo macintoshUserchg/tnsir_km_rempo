@@ -59,6 +59,17 @@
         "place": "Place",
         "education": "Education"
     },
+    "movements": {
+        "title": "Major Movements",
+        "subtitle": "The historical journey of struggles and public movements led by Dr. Kirodi Lal Meena",
+        "batch": "Batch",
+        "loadMore": "Load More",
+        "yearRange": "Year Range",
+        "totalMovements": "Total Movements",
+        "viewBatch": "View Batch",
+        "nextBatch": "Next Batch",
+        "prevBatch": "Previous Batch"
+    },
     "photoGalleryPage": {
         "title": "Photo Gallery",
         "subtitle": "Glimpses of public service and events"
