@@ -6,9 +6,9 @@ import { TimelineBlock } from './blocks/TimelineBlock';
 import { GalleryBlock } from './blocks/GalleryBlock';
 import { VideosBlock } from './blocks/VideosBlock';
 import { TestimonialsBlock } from './blocks/TestimonialsBlock';
-import BiographyBlock from './blocks/BiographyBlock';
-import StatsBlock from './blocks/StatsBlock';
-import NewsletterBlock from './blocks/NewsletterBlock';
+import { BiographyBlock } from './blocks/BiographyBlock';
+import { StatsBlock } from './blocks/StatsBlock';
+import { NewsletterBlock } from './blocks/NewsletterBlock';
 import FAQBlock from './blocks/FAQBlock';
 
 interface SectionRendererProps {

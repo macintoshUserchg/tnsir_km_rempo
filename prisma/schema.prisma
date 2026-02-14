@@ -114,6 +114,8 @@ model BlogPost {
   titleEn     String?   @map("title_en")
   contentHi   String    @map("content_hi")
   contentEn   String?   @map("content_en")
+  excerptHi   String?   @map("excerpt_hi")
+  excerptEn   String?   @map("excerpt_en")
   imageUrl    String?   @map("image_url")
   author      String    @default("Admin")
   published   Boolean   @default(false)
@@ -121,7 +123,29 @@ model BlogPost {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
+  attachments BlogAttachment[]
+
   @@map("blog_posts")
+}
+
+model BlogAttachment {
+  id          Int            @id @default(autoincrement())
+  blogPostId  Int            @map("blog_post_id")
+  type        AttachmentType
+  url         String
+  titleHi     String?        @map("title_hi")
+  titleEn     String?        @map("title_en")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+  blogPost    BlogPost       @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+
+  @@map("blog_attachments")
+}
+
+enum AttachmentType {
+  IMAGE
+  VIDEO
+  PDF
 }
 
 model TimelineEvent {
